@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>시설 예약 시스템</title>
+<!-- 이후 일본어로 변경 예정 -->
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f0f2f5;
+            color: #1a1a2e;
+            min-height: 100vh;
+        }
+
+        header {
+            background: #1a1a2e;
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        header h1 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+
+        header span.badge {
+            background: #4f46e5;
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .toast {
+            background: #4f46e5;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+        }
+
+        .user-bar {
+            background: white;
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+        }
+
+        .user-bar label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .user-bar input {
+            border: 1.5px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 7px 12px;
+            font-size: 0.9rem;
+            width: 120px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .user-bar input:focus {
+            border-color: #4f46e5;
+        }
+
+        .user-bar small {
+            color: #999;
+            font-size: 0.78rem;
+        }
+
+        .section-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #888;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .slot-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .slot-card {
+            background: white;
+            border-radius: 10px;
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+            transition: box-shadow 0.2s;
+        }
+
+        .slot-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .slot-card.reserved {
+            background: #fafafa;
+            opacity: 0.75;
+        }
+
+        .slot-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .facility-tag {
+            background: #eef2ff;
+            color: #4f46e5;
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .slot-time {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .slot-time span {
+            color: #aaa;
+            font-size: 0.85rem;
+            margin: 0 4px;
+        }
+
+        .slot-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .version-badge {
+            font-size: 0.72rem;
+            color: #bbb;
+            font-family: monospace;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+        }
+
+        .status-dot.reserved {
+            background: #e2e8f0;
+        }
+
+        .reserved-by {
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+
+        .btn-reserve {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 7px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-reserve:hover {
+            background: #4338ca;
+        }
+
+        .btn-reserved {
+            background: #e2e8f0;
+            color: #aaa;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 7px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: not-allowed;
+        }
+
+        .todo-note {
+            margin-top: 40px;
+            background: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            border-radius: 0 8px 8px 0;
+            padding: 16px 20px;
+            font-size: 0.85rem;
+            color: #92400e;
+            line-height: 1.7;
+        }
+
+        .todo-note strong {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>시설 예약 시스템</h1>
+    <span class="badge">낙관적 락 학습용</span>
+</header>
+
+<div class="container">
+
+    <!-- 플래시 메시지 -->
+    <div class="toast" th:if="${message}" th:text="${message}"></div>
+
+    <!-- 유저 ID 입력 -->
+    <div class="user-bar">
+        <label>내 유저 ID</label>
+        <input type="number" id="userIdInput" value="1001" min="1"/>
+        <small>예약 시 이 ID로 요청됩니다</small>
+    </div>
+
+    <p class="section-title">예약 가능 슬롯</p>
+
+    <div class="slot-list">
+        <div th:each="slot : ${slots}"
+             th:class="${slot.reserved} ? 'slot-card reserved' : 'slot-card'">
+
+            <div class="slot-info">
+                <span class="facility-tag" th:text="${slot.facilityName}"></span>
+                <span class="slot-time">
+                    <span th:text="${slot.startTimeFormatted}"></span>
+                    <span>~</span>
+                    <span th:text="${slot.endTimeFormatted}"></span>
+                </span>
+            </div>
+
+            <div class="slot-meta">
+                <span class="version-badge" th:text="'v' + ${slot.version}"></span>
+
+                <!-- 예약됨 -->
+                <th:block th:if="${slot.reserved}">
+                    <span class="reserved-by" th:text="'유저 ' + ${slot.reservedBy}"></span>
+                    <div class="status-dot reserved"></div>
+                    <button class="btn-reserved" disabled>예약됨</button>
+                </th:block>
+
+                <!-- 예약 가능 -->
+                <th:block th:unless="${slot.reserved}">
+                    <div class="status-dot"></div>
+                    <form method="post" action="/reserve">
+                        <input type="hidden" name="slotId" th:value="${slot.id}"/>
+                        <input type="hidden" name="userId" id="userId_hidden"/>
+                        <button class="btn-reserve"
+                                type="submit"
+                                onclick="document.getElementById('userId_hidden').value = document.getElementById('userIdInput').value">
+                            예약하기
+                        </button>
+                    </form>
+                </th:block>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 엔티티 연결 TODO 안내 -->
+    <div class="todo-note">
+        <strong>TODO: 엔티티 연결 후 교체할 부분</strong>
+        - ReservationController: DUMMY_SLOTS → SlotRepository.findAll()<br>
+        - /reserve POST: 더미 응답 → SlotService.reserve(slotId, userId)<br>
+        - 낙관적 락 충돌 시 OptimisticLockException → 409 응답 처리 추가
+    </div>
+
+</div>
+
+</body>
+</html>

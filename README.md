@@ -10,4 +10,4 @@
     - @versionアノテーションにして、HibernateがWhere version = 読んだ値 にする。
     - Aのクエリが成功すればversion=1にする、BとかCがverson = 0 にすれば
     - OptimisticLockException例外に引っかかる、同時性の措置を講じる
-   
+   c
