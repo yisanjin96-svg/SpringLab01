@@ -1,0 +1,5 @@
+com\hoshimoto\lovemyself\dto\SlotDto.class
+com\hoshimoto\lovemyself\domain\Facility.class
+com\hoshimoto\lovemyself\LoveMyselfApplication.class
+com\hoshimoto\lovemyself\domain\Slot.class
+com\hoshimoto\lovemyself\controller\ReservationController.class
