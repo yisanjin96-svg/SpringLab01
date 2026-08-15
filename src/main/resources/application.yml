@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/reservation
+    url: jdbc:postgresql://localhost:5433/reservation
     username: dev
     password: dev1234
 

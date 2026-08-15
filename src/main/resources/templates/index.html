@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>시설 예약 시스템</title>
-<!-- 이후 일본어로 변경 예정  -->
+    <!-- 이후 일본어로 변경 예정  -->
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -273,12 +273,10 @@
                 <!-- 예약 가능 -->
                 <th:block th:unless="${slot.reserved}">
                     <div class="status-dot"></div>
-                    <form method="post" action="/reserve">
-                        <input type="hidden" name="slotId" th:value="${slot.id}"/>
-                        <input type="hidden" name="userId" id="userId_hidden"/>
-                        <button class="btn-reserve"
-                                type="submit"
-                                onclick="document.getElementById('userId_hidden').value = document.getElementById('userIdInput').value">
+                    <form method="post"
+                          th:action="@{'/api/slots/' + ${slot.id} + '/reserve'}"
+                          onsubmit="this.action += '?userId=' + document.getElementById('userIdInput').value">
+                        <button class="btn-reserve" type="submit">
                             예약하기
                         </button>
                     </form>
@@ -287,15 +285,6 @@
 
         </div>
     </div>
-
-    <!-- 엔티티 연결 TODO 안내 -->
-    <div class="todo-note">
-        <strong>TODO: 엔티티 연결 후 교체할 부분</strong>
-        - ReservationController: DUMMY_SLOTS → SlotRepository.findAll()<br>
-        - /reserve POST: 더미 응답 → SlotService.reserve(slotId, userId)<br>
-        - 낙관적 락 충돌 시 OptimisticLockException → 409 응답 처리 추가
-    </div>
-
 </div>
 
 </body>
