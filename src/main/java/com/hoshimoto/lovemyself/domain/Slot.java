@@ -49,14 +49,24 @@ public class Slot {
         this.endTime = endTime;
     }
 
-    public void reseve(Long userId) {
+    /**
+     * 施設予約メソッド
+     *
+     * @param Long userId (予約しようとユーザーアカウント)
+     * @throws IllegalStateException （同時予約エラーステータス）
+     **/
+    public void reserve(Long userId) {
         if (this.reserved) {
-            throw  new IllegalStateException("既に予約した「施設」です。");
+            throw new IllegalStateException("既に予約した「施設」です。");
         }
         this.reserved = true;
         this.reservedBy = userId;
     }
 
+    /**
+     * 施設予約キャンセルメソッド
+     *
+     **/
     public void cancel() {
         this.reserved = false;
         this.reservedBy = null;
