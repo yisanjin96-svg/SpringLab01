@@ -27,9 +27,15 @@ public class ReservationService {
         }
     }
 
+    @Transactional
     public void cancelReserveSlot(Long slotId, Long userId) {
         Slot slot = slotRepository.findById(slotId).orElseThrow(()->
                 new IllegalArgumentException("存在してないスロットです。"));
+
+            if (!userId.equals(slot.getReservedBy())) {
+                throw new IllegalStateException("本人の予約のみキャンセルできます。");
+            }
+
             slot.cancel();
             slotRepository.save(slot);
     }

@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./mvnw compile *)",
+      "Bash(mvn compile *)",
+      "Bash(timeout 30 mvn spring-boot:run)",
+      "Bash(docker compose *)",
+      "Bash(docker exec *)",
+      "Bash(timeout 25 mvn spring-boot:run)",
+      "Bash(netstat -ano)",
+      "Bash(mvn spring-boot:run)",
+      "Bash(powershell *)"
+    ]
+  }
+}
