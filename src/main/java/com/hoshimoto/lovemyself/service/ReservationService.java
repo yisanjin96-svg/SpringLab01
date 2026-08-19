@@ -6,6 +6,9 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
 public class ReservationService {
     private final SlotRepository slotRepository;
@@ -36,8 +39,12 @@ public class ReservationService {
                 throw new IllegalStateException("本人の予約のみキャンセルできます。");
             }
 
-            slot.cancel();
-            slotRepository.save(slot);
+        slot.cancel();
+        slotRepository.save(slot);
+    }
+
+    public List<Slot> getSlotsBetween(LocalDateTime start, LocalDateTime end) {
+        return slotRepository.findBystartTimeBetween(start, end);
     }
 
 }

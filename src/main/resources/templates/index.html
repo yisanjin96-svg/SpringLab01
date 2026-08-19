@@ -281,6 +281,15 @@
                         </button>
                     </form>
                 </th:block>
+                <th:block th:if="${slot.reserved}">
+                    <span class="reserved-by" th:text="'유저 ' + ${slot.reservedBy}"></span>
+                    <div class="status-dot reserved"></div>
+                    <form method="post"
+                          th:action="@{'/api/slots/' + ${slot.id} + '/cancel'}"
+                          onsubmit="this.action += '?userId=' + document.getElementById('userIdInput').value">
+                        <button class="btn-reserve" type="submit">취소하기</button>
+                    </form>
+                </th:block>
             </div>
 
         </div>
