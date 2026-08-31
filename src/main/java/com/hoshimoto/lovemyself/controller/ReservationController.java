@@ -1,16 +1,20 @@
 package com.hoshimoto.lovemyself.controller;
 
 import com.hoshimoto.lovemyself.domain.Slot;
+import com.hoshimoto.lovemyself.dto.SlotDto;
 import com.hoshimoto.lovemyself.service.ReservationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/slots")
 public class ReservationController {
+
+    private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("MM/dd HH:mm");
 
     private final ReservationService reservationService;
 
@@ -21,7 +25,7 @@ public class ReservationController {
     @PostMapping("/{slotId}/reserve")
     public ResponseEntity<Void> reserve(@PathVariable Long slotId, @RequestParam Long userId){
         reservationService.reserveSlot(slotId, userId);
-        return  ResponseEntity.ok().build();
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{slotId}/cancel")
@@ -30,17 +34,30 @@ public class ReservationController {
         return ResponseEntity.ok().build();
     }
 
+    // Slot → SlotDto 変換でLazy問題を解決
+    // Facility は Lazy なので、トランザクション内で触れる Service 層か、
+    // ここで DTO にマッピングすることで Jackson のシリアライズエラーを回避
     @GetMapping
-    public ResponseEntity<List<Slot>> getSlots(
+    public ResponseEntity<List<SlotDto>> getSlots(
             @RequestParam LocalDateTime start,
             @RequestParam LocalDateTime end
-        ) {
-        List<Slot> slots = reservationService.getSlotsBetween(start, end);
-        // Lazyかけたから、多分Facility部分にエラー
-        // InvalidDefinitionException (Jackson com.fasterxml.jackson.databind.exc.InvalidDefinitionException)
-        // javaObject ➞ JSON シリアライズができないの、笑笑
-        // 設計意図 : FaciltyでLAZYを掛けたのは正しい判断だと思います。（不必要なEAGERLOADINGを塞ぐ為）
-        // でDTOを使うもう一つの理由ではないか～？
-        return ResponseEntity.ok(slots);
+    ) {
+        List<SlotDto> dtos = reservationService.getSlotsBetween(start, end)
+                .stream()
+                .map(this::toDto)
+                .toList();
+        return ResponseEntity.ok(dtos);
+    }
+
+    private SlotDto toDto(Slot slot) {
+        return new SlotDto(
+                slot.getId(),
+                slot.getFacility().getName(),
+                slot.getStartTime().format(FMT),
+                slot.getEndTime().format(FMT),
+                slot.isReserved(),
+                slot.getReservedBy(),
+                slot.getVersion()
+        );
     }
 }
