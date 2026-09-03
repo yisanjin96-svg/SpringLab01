@@ -11,7 +11,8 @@
       "Bash(mvn spring-boot:run)",
       "Bash(powershell *)",
       "Bash(npm install *)",
-      "Bash(xargs cat *)"
+      "Bash(xargs cat *)",
+      "WebFetch(domain:claude.ai)"
     ]
   }
 }
