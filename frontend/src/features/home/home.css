@@ -1,0 +1,160 @@
+/* =====================
+   Home Page
+   ===================== */
+.home-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0d1117 0%, #161b27 60%, #1a2744 100%);
+  font-family: 'Segoe UI', 'Apple SD Gothic Neo', sans-serif;
+  color: #fff;
+}
+
+.home-header {
+  padding: 24px 60px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.home-logo {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #7eb3ff;
+}
+
+.home-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 100px;
+  padding-inline: 40px;
+}
+
+.home-headline {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 36px;
+  letter-spacing: -0.5px;
+}
+
+/* =====================
+   FlightSearchBar
+   ===================== */
+.search-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  max-width: 1000px;
+}
+
+.search-tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.search-tab {
+  padding: 7px 20px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.15s, color 0.15s;
+}
+
+.search-tab.active {
+  background: #4f8ef7;
+  border-color: #4f8ef7;
+  color: #fff;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.search-cell {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 18px;
+}
+
+.search-cell.disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.search-divider {
+  width: 1px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.12);
+  flex-shrink: 0;
+}
+
+.search-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.search-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 14px;
+  padding: 0;
+  color-scheme: dark;
+  width: 100%;
+}
+
+.search-counter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.search-counter-btn {
+  background: rgba(255, 255, 255, 0.12);
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 15px;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.search-counter-val {
+  font-size: 14px;
+  font-weight: 600;
+  min-width: 16px;
+  text-align: center;
+  color: #fff;
+}
+
+.search-submit-btn {
+  flex-shrink: 0;
+  margin: 8px;
+  padding: 12px 28px;
+  background: #4f8ef7;
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
