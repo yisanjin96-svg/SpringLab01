@@ -1,1 +1,35 @@
-!CLAUDE.md
+# ===== 빌드 산출물 =====
+target/
+build/
+out/
+*.class
+*.jar
+*.war
+*.log
+
+# ===== 프론트엔드 =====
+node_modules/
+.vite/
+dist/
+
+# ===== IDE / OS =====
+.idea/
+*.iml
+.vscode/
+.DS_Store
+Thumbs.db
+
+# ===== 로컬 전용 설정 (Claude Code 개인 설정, AI 도구 작업 로그) =====
+.claude/settings.local.json
+.github/modernize/
+
+# ===== 민감 정보 (비밀번호, 키, 인증서) =====
+.env
+.env.*
+!.env.example
+application-local.yml
+application-secret.yml
+*.pem
+*.key
+*.p12
+*.jks

@@ -16,7 +16,6 @@ import jakarta.persistence.Table;
 @Table (name="airport")
 @EntityListeners(AuditingEntityListener.class) 
 public class Airport {
-
     
     // JPA用のデフォルトコンストラクタ(外部からの生成を防ぐためprotected)
     protected Airport(){}
