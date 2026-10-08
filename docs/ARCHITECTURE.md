@@ -41,9 +41,31 @@ com.hoshimoto.lovemyself
 |---|---|---|
 | `controller/` | HTTP 요청을 받아 입력값을 검증하고, service를 호출해 DTO로 응답한다 | 비즈니스 로직 작성, repository 직접 호출 |
 | `service/` | 유스케이스 흐름을 조율하고 트랜잭션 경계(`@Transactional`)를 잡는다 | 엔티티 상태를 직접 조작하는 세부 규칙 작성 (domain에 위임) |
-| `repository/` | DB 접근 (Spring Data JPA 인터페이스) | 비즈니스 판단 |
+| `repository/` | DB 접근. 조회 쿼리는 `@Query`로 직접 작성한다 | 비즈니스 판단, 메서드 이름 기반 쿼리(`findByXxxAndYyy`) |
 | `domain/` | 엔티티, Enum, Value Object. 비즈니스 규칙과 상태 변경 메서드를 가진다 (예: `slot.reserve()`) | Setter 공개, 웹/DTO 의존 |
 | `dto/` | 요청/응답 전용 객체. 엔티티를 외부에 노출하지 않기 위해 쓴다 | 로직 작성 |
+
+## Repository 규칙
+
+- 쿼리는 메서드 이름으로 자동 생성하지 않고, **`@Query`로 직접 작성**한다.
+  - 이유: 어떤 테이블의 어떤 컬럼을 어떤 조건으로 조회하는지 코드에서 바로 보이게 하기 위해
+- 파라미터는 `@Param`으로 이름을 붙여 바인딩한다 (`:name` 형식).
+- 현재 일시 같은 값은 쿼리 안에서 만들지 않고, service에서 만들어 파라미터로 넘긴다.
+
+## DTO 규칙
+
+- 파일명: 요청은 `Xxx...Request.java`, 응답은 `XxxResponse.java` (예: `FlightSearchRequest`, `FlightResponse`)
+- 필드는 `private final` + 생성자 + getter로 만든다 (불변 객체)
+- 엔티티 → 응답 DTO 변환은 service에서 한다. controller는 엔티티를 받지 않는다.
+
+## API 목록
+
+| No | 메서드 / URL | 도메인 | 요청 DTO | 응답 DTO |
+|---|---|---|---|---|
+| API-01 | `GET /api/flights` | flight | `FlightSearchRequest` | `List<FlightResponse>` |
+| API-02 | `GET /api/airports` | flight | 없음 | `List<AirportResponse>` |
+
+상세는 [specs/specs.md](specs/specs.md) 참조.
 
 ## 도메인 간 규칙
 
