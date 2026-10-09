@@ -1,126 +1,95 @@
-## Spec
+### X1 機能定義（第1段階：片道・空港コードのみ）
 
-### API-01 항공편 조회
+- 機能 : 出発地➝到着地のみ、出発便名リストを照会する
+- 範囲外（次の段階で追加）: 出発日付・往復・人数・都市名検索・空港名表示・ページング
+- 更新テーブル : なし（照会のみ）
 
-| 항목 | 내용 |
-|---|---|
-| 메서드 / URL | `GET /api/flights` |
-| 대상 테이블 | `flight` (조회만, 상태 변경 없음) |
-| 도메인 | `flight` |
-| 요청 DTO | `flight/dto/FlightSearchRequest.java` |
-| 응답 DTO | `flight/dto/FlightResponse.java` (리스트로 반환) |
+#### 1. 入力（クライアント側➝サーバー側）
 
-**요청 DTO : `FlightSearchRequest.java`** (Query String → `@ModelAttribute`로 받음)
+- リクエスト : `GET /api/flights?departureAirport=FUK&arrivalAirport=HND`
+- 空港はプルダウン（X0）から選択するため、画面から不正な値は入らない。ただしAPIは直接呼び出せるのでサーバー側でも検証する
 
-```java
-public class FlightSearchRequest {
+| 引数 | 型 | 必須 | 検証 |
+|---|---|---|---|
+| departureAirport | String | ○ | 英大文字3桁（小文字は変換せずER001） |
+| arrivalAirport | String | ○ | 英大文字3桁（小文字は変換せずER001） |
 
-    @NotBlank
-    @Size(min = 3, max = 3)
-    private final String departureAirport;  // 출발 공항 코드 (완전 일치) 예: HND
+#### 2. 参照テーブル・条件
 
-    @NotBlank
-    @Size(min = 3, max = 3)
-    private final String arrivalAirport;    // 도착 공항 코드 (완전 일치) 예: FUK
-}
-```
+- 参照テーブル : `flight`
+- WHERE条件 : `departure_airport` = 完全一致 AND `arrival_airport` = 完全一致
+- AND `departure_at` >= 現在日時（出発済みの便は除外。現在日時はserviceから引数で渡す）
+- SORT : `departure_at` 昇順
 
-| 필드 | 타입 | 필수 | 비교 방식 | 대응 컬럼 |
+#### 3. 出力（サーバー側➝クライアント側）
+
+レスポンス : `List<FlightResponse>`
+
+| 論理名 | フィールド名 | 型 | 元のカラム | 備考 |
 |---|---|---|---|---|
-| departureAirport | String | ○ | 완전 일치 (`=`) | `flight.departure_airport` |
-| arrivalAirport | String | ○ | 완전 일치 (`=`) | `flight.arrival_airport` |
+| 航空便ID | id | Long | flight_id | DTO作成O, 遷移先(X2)ID参照の為 |
+| 便名 | flightNumber | String | flight_number | DTO作成O, X1画面表示 |
+| 出発空港コード | departureAirport | String | departure_airport | DTO作成O, X1画面表示 |
+| 到着空港コード | arrivalAirport | String | arrival_airport | DTO作成O, X1画面表示 |
+| 出発日時 | departureAt | LocalDateTime | departure_at | DTO作成O, X1画面表示 |
+| 到着日時 | arrivalAt | LocalDateTime | arrival_at | DTO作成O, X1画面表示 |
+| 登録日時 | － | － | created_at | DTO作成X, 監査用で画面に不要 |
+| 更新日時 | － | － | updated_at | DTO作成X, 監査用で画面に不要 |
 
-**Repository : `FlightRepository.java`** (`@Query`로 직접 작성)
+- 日時のJSON形式 : `2026-10-01T09:00:00`
 
-```java
-@Query("""
-    SELECT f
-    FROM Flight f
-    WHERE f.departureAirport = :departureAirport
-      AND f.arrivalAirport   = :arrivalAirport
-      AND f.arrivalAt        > :now
-    ORDER BY f.departureAt ASC
-    """)
-List<Flight> searchFlights(@Param("departureAirport") String departureAirport,
-                           @Param("arrivalAirport") String arrivalAirport,
-                           @Param("now") LocalDateTime now);
-```
+#### 4. 例外・境界
 
-- `:now` 는 클라이언트가 보내지 않고, service에서 현재 일시(`LocalDateTime.now()`)를 넣는다.
-- 도착 일시(`arrival_at`)가 현재 일시보다 이후인 항공편만 조회한다.
+- 結果0件 : 200 + 空リスト。クライアント側でメッセージを表示する（ErrorCodeなし）
+- 存在しない空港コード（例: ZZZ） : 結果0件と同じ扱い（200 + 空リスト）
+- 引数なし・形式エラー : HTTP400, ER001
+- 出発地 = 到着地 : HTTP400, ER002（画面では到着地プルダウンから出発地を除外する）
 
-**응답 DTO : `FlightResponse.java`** (200 OK, 0건이면 빈 배열 `[]`)
+#### 5. 実装メモ
 
-```java
-public class FlightResponse {
+- JPAメソッド名が長くなるので `@Query` を使用する
 
-    private final Long flightId;              // flight_id         예: 1
-    private final String flightNumber;        // flight_number     예: JL305
-    private final String departureAirport;    // departure_airport 예: HND
-    private final String arrivalAirport;      // arrival_airport   예: FUK
-    private final LocalDateTime departureAt;  // departure_at      예: 2026-10-10T09:00:00
-    private final LocalDateTime arrivalAt;    // arrival_at        예: 2026-10-10T10:35:00
-}
-```
 
-```json
-[
-  {
-    "flightId": 1,
-    "flightNumber": "JL305",
-    "departureAirport": "HND",
-    "arrivalAirport": "FUK",
-    "departureAt": "2026-10-10T09:00:00",
-    "arrivalAt": "2026-10-10T10:35:00"
-  }
-]
-```
+### X0 機能定義（空港リスト照会）
 
-**에러**
+- 機能 : X1検索バーの出発地・到着地プルダウンに表示する空港リストを照会する
+- 更新テーブル : なし（照会のみ）
 
-| 상황 | 응답 |
-|---|---|
-| departureAirport / arrivalAirport 누락, 3자리가 아님 | 400 Bad Request |
+#### 1. 入力（クライアント側➝サーバー側）
 
----
+- リクエスト : `GET /api/airports`
+- 引数 : なし
 
-### API-02 공항 조회
+#### 2. 参照テーブル・条件
 
-| 항목 | 내용 |
-|---|---|
-| 메서드 / URL | `GET /api/airports` |
-| 대상 테이블 | `airport` (조회만, 상태 변경 없음) |
-| 도메인 | `flight` (Airport) |
-| 요청 DTO | 없음 (파라미터 없음) |
-| 응답 DTO | `flight/dto/AirportResponse.java` (리스트로 반환) |
+- 参照テーブル : `airport`
+- WHERE条件 : なし（全件）
+- SORT : `airport_code` 昇順
 
-**Repository : `AirportRepository.java`** (`@Query`로 직접 작성)
+#### 3. 出力（サーバー側➝クライアント側）
 
-```java
-@Query("""
-    SELECT a
-    FROM Airport a
-    ORDER BY a.airportCode ASC
-    """)
-List<Airport> findAllAirports();
-```
+レスポンス : `List<AirportResponse>`
 
-- 조건 없이 전체 취득한다.
+| 論理名 | フィールド名 | 型 | 元のカラム | 備考 |
+|---|---|---|---|---|
+| 空港コード | airportCode | String | airport_code | DTO作成O, X1検索リクエストの引数として使用 |
+| 空港名 | name | String | name | DTO作成O, プルダウン表示（例: 福岡空港 (FUK)） |
+| 都市名 | city | String | city | DTO作成O, プルダウン表示 |
+| 登録日時 | － | － | created_at | DTO作成X, 監査用で画面に不要 |
+| 更新日時 | － | － | updated_at | DTO作成X, 監査用で画面に不要 |
 
-**응답 DTO : `AirportResponse.java`** (200 OK, 0건이면 빈 배열 `[]`)
 
-```java
-public class AirportResponse {
+#### 4. 例外・境界
 
-    private final String airportCode;  // airport_code 예: FUK
-    private final String name;         // name         예: 후쿠오카 공항
-    private final String city;         // city         예: 후쿠오카
-}
-```
+- 結果0件 : 200 + 空リスト（ErrorCodeなし）
 
-```json
-[
-  { "airportCode": "FUK", "name": "후쿠오카 공항", "city": "후쿠오카" },
-  { "airportCode": "HND", "name": "하네다 공항", "city": "도쿄" }
-]
-```
+
+### 共通 エラーレスポンス
+
+- 形式 : 1件のオブジェクトで返す
+  `{"code": "ER001", "message": "出発地・到着地を選択してください。"}`
+
+| ErrorCode | HTTP | message |
+|---|---|---|
+| ER001 | 400 | 出発地・到着地を選択してください。 |
+| ER002 | 400 | 出発地と到着地が同じです。 |

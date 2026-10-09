@@ -1,4 +1,4 @@
-package com.hoshimoto.lovemyself.member.domain;
+package com.hoshimoto.lovemyself.flight.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -7,45 +7,26 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.hoshimoto.lovemyself.member.domain.Gender;
+import com.hoshimoto.lovemyself.member.domain.MemberGrade;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Id;
 
-@Entity 
-@Table (name = "member")
+
+@Entity
+@Table (name="fight")
 @EntityListeners(AuditingEntityListener.class)
-public class Member {
+public class Flight {
 
-    // JPA가 리플렉션이니까 프로텍트여도 접근가능하나 생객체 생성은 막힘.
-    protected Member(){
-        
-    }
-
-public static Member register(String nameKanji, String nameKana, String nameRoma,
-    LocalDate birthDate, Gender gender, String telephone, String email, String address) 
-{
-    Member member = new Member();
-
-    member.nameKanji = nameKanji;
-    member.nameKana = nameKana;
-    member.nameRoma = nameRoma;
-    member.birthDate = birthDate;
-    member.gender = gender;
-    member.telephone = telephone;
-    member.email = email;
-    member.address = address;
-    member.grade = MemberGrade.REGULAR;
-    member.deleted = false;
-
-    return member;
-}
-
+    protected Flight(){}
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
@@ -64,9 +45,9 @@ public static Member register(String nameKanji, String nameKana, String nameRoma
     @Column(name = "member_birth_date", nullable = false)
     private LocalDate birthDate;
     
-    @Enumerated(EnumType.STRING)
-    @Column(name = "member_gender", nullable = false, length = 10)
-    private Gender gender;
+    // @Enumerated(EnumType.STRING)
+    // @Column(name = "member_gender", nullable = false, length = 10)
+    // private Gender gender;
 
     @Column(name = "member_telephone", nullable = false, length = 20)
     private String telephone;
@@ -77,9 +58,9 @@ public static Member register(String nameKanji, String nameKana, String nameRoma
     @Column(name = "member_address", nullable = false, length = 255)
     private String address;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "member_grade", nullable = false, length = 20)
-    private MemberGrade grade;
+    // @Enumerated(EnumType.STRING)
+    // @Column(name = "member_grade", nullable = false, length = 20)
+    // private MemberGrade grade;
 
     @Column(name="is_deleted", nullable = false)
     private boolean deleted;

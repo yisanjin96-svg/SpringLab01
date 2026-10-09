@@ -7,7 +7,8 @@
 com.hoshimoto.lovemyself
 ├── common/       설정・공통 예외・기본 엔티티
 ├── member/       회원
-├── flight/       항공편・공항・좌석
+├── flight/       항공편・좌석
+├── airport/      공항
 └── reservation/  예약
 
 각 도메인 패키지의 내부 구성:
