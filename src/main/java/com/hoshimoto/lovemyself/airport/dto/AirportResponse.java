@@ -1,5 +1,8 @@
 package com.hoshimoto.lovemyself.airport.dto;
 
+/**
+ * 클린 아키텍처 22장 "경계를 횡단하는 데이터": 엔티티를 그대로 내보내지 않고, 단순한 데이터 구조로 경계를 넘긴다.
+ */
 public class AirportResponse {
  
     private final String airportCode;
