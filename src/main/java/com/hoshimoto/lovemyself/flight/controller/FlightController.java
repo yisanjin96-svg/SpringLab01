@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hoshimoto.lovemyself.flight.dto.FlightResponse;
 import com.hoshimoto.lovemyself.flight.service.FlightService;
 
+import jakarta.validation.constraints.Pattern;
+
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -24,7 +26,11 @@ public class FlightController {
     }
 
     @GetMapping
-    public ResponseEntity<List<FlightResponse>> searchFlights(@RequestParam String departureAirport,@RequestParam String arrivalAirport) {
+    public ResponseEntity<List<FlightResponse>> searchFlights(
+        // 【A1】 대문자 3글자가 아니면 스프링이 HandlerMethodValidationException을 던짐 → 【A2】
+        @RequestParam @Pattern(regexp = "^[A-Z]{3}$") String departureAirport,
+        @RequestParam @Pattern(regexp = "^[A-Z]{3}$") String arrivalAirport)
+    {
         return ResponseEntity.ok(flightService.searchFlights(departureAirport, arrivalAirport));
     }
     
