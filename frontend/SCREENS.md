@@ -1,5 +1,54 @@
 # 화면 정의서 (loveMyself Air 목업)
 
+## 진행 현황 (2026-10-12 기준)
+
+### 백엔드 API (완성)
+
+| 기능 | API | 화면에서 쓰는 곳 | 상태 |
+|---|---|---|---|
+| X0 공항 목록 | `GET /api/airports` → `List<AirportResponse>` | 검색 바의 출발지·도착지 드롭다운 | ✅ 완성 · 실행 확인 |
+| X1 항공편 검색 | `GET /api/flights?departureAirport=FUK&arrivalAirport=HND` → `List<FlightResponse>` | 검색 결과 목록 | ✅ 완성 · 실행 확인 |
+| 공통 에러 | `400 {"code": "ER001", "message": "..."}` | 검색 실패 시 메시지 표시 | ✅ 완성 (실행 확인 전) |
+
+자세한 입출력: [docs/specs/specs.md](../docs/specs/specs.md)
+
+### 프론트 현재 상태
+
+- 실제 있는 파일: `App.tsx` → `features/home/pages/Home.tsx` → `features/home/components/FlightSearchBar.tsx`
+- 검색 바는 **화면만 있고 API 연결 없음** (출발지·도착지가 글자 입력칸, 검색 버튼 동작 없음)
+- 아래 "화면 목록"의 `src/pages`, `src/mock` 등은 예전 목업 기준이라 **지금 폴더에는 없음**
+- `vite.config.ts`에 `/api` → `localhost:8080` 프록시는 이미 설정됨
+- axios 설치 완료 (`^1.20.0`, 10/12)
+
+### 다음 할 일: 화면에 API 연결 (1단계 = specs X0·X1 범위만)
+
+1단계 범위는 편도, 공항 코드만. 날짜·왕복·인원은 화면에 있어도 **API로 보내지 않는다** (specs의 범위 밖).
+
+| 순서 | 할 일 | 연결할 API | 화면 변화 |
+|---|---|---|---|
+| F1 | 출발지·도착지 입력칸을 **드롭다운**으로 바꾸기 | X0 | 공항 목록이 `福岡空港 (FUK)` 형태로 보임 |
+| F2 | 도착지 드롭다운에서 **출발지로 고른 공항 빼기** | — | 같은 공항을 고를 수 없음 (ER002 예방) |
+| F3 | 검색 버튼 → 항공편 검색 | X1 | 결과 목록 표시 (편명, 출발·도착 시각) |
+| F4 | 결과 0건 / 에러 메시지 표시 | X1 | "검색 결과가 없습니다" / ER001·ER002 메시지 |
+
+### 시작 전에 제이님이 정할 것
+
+1. **파일 위치:** `frontend/CLAUDE.md` 규칙상 `features` 끼리는 서로 import할 수 없음. 검색 바는 `home`에 있는데 공항(X0)·항공편(X1)을 불러와야 함 → 아래 중 하나로 정하기
+   - (가) `features/home` 안에 공항·항공편 호출 코드를 같이 두기
+   - (나) `features/airport`, `features/flight`를 만들고, `home`은 그것들을 조립만 하는 화면으로 규칙에 예외 두기
+2. **F1 정의 글로 쓰기 (수칙 1번):** 어떤 API를 언제 부르고, 받은 어떤 값을 화면 어디에 보여 주는지
+
+### F1에서 만들 파일 (예상, 위 1번 결정에 따라 위치 달라짐)
+
+| 파일 | 역할 | 백엔드로 치면 |
+|---|---|---|
+| `types.ts` | `AirportResponse` 타입 (백엔드 DTO와 같은 이름·필드) | dto |
+| `api.ts` | `fetchAirports()` — `/api/airports` 호출 | (controller를 부르는 쪽) |
+| `hooks/useAirports.ts` | 화면이 처음 뜰 때 한 번 불러서 목록을 들고 있음 | service |
+| `FlightSearchBar.tsx` | 드롭다운에 목록을 그림 | 화면 |
+
+---
+
 대한항공 예약 홈페이지를 오마주한 항공권 조회/예약 목업입니다.
 **실제 Entity/백엔드 API와는 아직 연결되지 않았고**, `src/mock`의 목업 데이터만 사용합니다.
 
