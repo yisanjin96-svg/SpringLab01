@@ -52,6 +52,9 @@ com.hoshimoto.lovemyself
 | 09/07 | **항공권 예약 시스템으로 전환**<br>**航空券予約システムへ移行** | 도메인 단위 아키텍처 도입<br>ドメイン単位アーキテクチャの導入 |
 | 09/23 | **테이블 설계**<br>**テーブル設計** | member · flight · airport · seat · flight_fare 설계와 설계 이유 문서화<br>member・flight・airport・seat・flight_fareの設計と設計理由のドキュメント化 |
 | 10/06 | **프로젝트 정비**<br>**プロジェクト整備** | 아키텍처·테이블 설계서·기능 정의 문서 작성, `.gitignore`와 Git 규칙 정리<br>アーキテクチャ・テーブル設計書・機能定義書の作成、`.gitignore`とGitルールの整理 |
+| 10/08 | **X0 공항 목록 API**<br>**X0 空港リストAPI** | `GET /api/airports` 구현, JPQL(`@Query`)과 API 명세서 작성법 학습<br>`GET /api/airports`の実装、JPQL（`@Query`）とAPI仕様書の書き方を学習 |
+| 10/11 | **X1 항공편 검색 API**<br>**X1 航空便検索API** | `GET /api/flights` 구현 (domain → repository → dto → service → controller), 출발한 편 제외 조건까지 실행 확인<br>`GET /api/flights`の実装（domain → repository → dto → service → controller）、出発済み便の除外まで動作確認 |
+| 10/12 | **공통 예외 처리**<br>**共通例外処理** | ErrorCode · BusinessException · ErrorResponse · GlobalExceptionHandler 작성, 입력값 검사(ER001)와 업무 규칙 검사(ER002) 구분<br>ErrorCode・BusinessException・ErrorResponse・GlobalExceptionHandlerの作成、入力値検証（ER001）と業務ルール検証（ER002）の区別 |
 
 ---
 
@@ -74,4 +77,6 @@ member
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | 아키텍처, 레이어 역할, 프로젝트 규칙<br>アーキテクチャ、レイヤーの役割、プロジェクトルール |
 | [docs/db/테이블설계서.MD](docs/db/테이블설계서.MD) | 테이블 정의, 인덱스, 설계 이유<br>テーブル定義、インデックス、設計理由 |
 | [docs/specs/specs.md](docs/specs/specs.md) | 기능 정의<br>機能定義 |
+| [docs/study/STUDY_LOG.md](docs/study/STUDY_LOG.md) | 레이어별 공부 기록<br>レイヤー別の学習記録 |
+| [docs/study/EXCEPTION_GUIDE.md](docs/study/EXCEPTION_GUIDE.md) | 예외 처리 참고서<br>例外処理の参考書 |
 | [frontend/SCREENS.md](frontend/SCREENS.md) | 화면 정의<br>画面定義 |
