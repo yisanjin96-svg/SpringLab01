@@ -4,12 +4,12 @@ import AirportSelect from './AirportSelect'
 import { useAirports } from '../hooks/useAirports'
 
 
-// 仮データ：API（GET /api/airports）連携後に差し替える
-const DUMMY_AIRPORTS = [
-  { airportCode: 'HND', name: '羽田空港', city: '東京' },
-  { airportCode: 'FUK', name: '福岡空港', city: '福岡' },
-  { airportCode: 'KIX', name: '関西国際空港', city: '大阪' },
-]
+/* 仮（かり）データ：API（GET /api/airports）連携後に差し替える */
+  // const DUMMY_AIRPORTS = [
+  //   { airportCode: 'HND', name: '羽田空港', city: '東京' },
+  //   { airportCode: 'FUK', name: '福岡空港', city: '福岡' },
+  //   { airportCode: 'KIX', name: '関西国際空港', city: '大阪' },
+  // ]
 
 /* 
 * ユニオン型 = Optionみたいな
