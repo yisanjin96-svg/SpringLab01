@@ -10,7 +10,7 @@ export default function Home() {
       </header>
 
       <main className="home-main">
-        <h2 className="home-headline">어디에 방문하실 예정이신가요?</h2>
+        <h2 className="home-headline">どちらへお出かけですか？</h2>
         <FlightSearchBar />
       </main>
     </div>
