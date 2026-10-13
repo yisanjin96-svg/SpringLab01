@@ -33,3 +33,6 @@ application-secret.yml
 *.key
 *.p12
 *.jks
+
+# ===== 로컬 H2 DB 파일 =====
+data/
