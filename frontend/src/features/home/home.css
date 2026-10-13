@@ -4,7 +4,7 @@
 .home-page {
   min-height: 100vh;
   background: linear-gradient(135deg, #0d1117 0%, #161b27 60%, #1a2744 100%);
-  font-family: 'Segoe UI', 'Apple SD Gothic Neo', sans-serif;
+  font-family: 'Segoe UI', 'Hiragino Sans', 'Yu Gothic UI', 'Meiryo', sans-serif;
   color: #fff;
 }
 
@@ -77,7 +77,6 @@
   backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 14px;
-  overflow: hidden;
 }
 
 .search-cell {
@@ -157,4 +156,66 @@
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
+}
+
+/* =====================
+   AirportSelect
+   ===================== */
+.airport-select {
+  position: relative;
+}
+
+.airport-select-input {
+  cursor: pointer;
+}
+
+/* セルの真下に表示（隙間を空けるとマウスが離れて閉じるため top: 100%） */
+.airport-select-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 10;
+  min-width: 240px;
+  max-height: 280px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: #1c2333;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+}
+
+.airport-select-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.airport-select-item:hover {
+  background: rgba(79, 142, 247, 0.18);
+}
+
+.airport-select-item.selected {
+  background: rgba(79, 142, 247, 0.32);
+}
+
+.airport-select-name {
+  font-size: 14px;
+  color: #fff;
+}
+
+.airport-select-sub {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.airport-select-empty {
+  padding: 8px 12px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
 }
