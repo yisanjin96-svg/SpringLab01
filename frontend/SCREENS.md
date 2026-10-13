@@ -17,7 +17,7 @@
 - 실제 있는 파일: `App.tsx` → `features/home/pages/Home.tsx` → `features/home/components/FlightSearchBar.tsx`
 - 검색 바는 **화면만 있고 API 연결 없음** (출발지·도착지가 글자 입력칸, 검색 버튼 동작 없음)
 - 아래 "화면 목록"의 `src/pages`, `src/mock` 등은 예전 목업 기준이라 **지금 폴더에는 없음**
-- `vite.config.ts`에 `/api` → `localhost:8080` 프록시는 이미 설정됨
+- `vite.config.ts`에 `/api` → `localhost:8001` 프록시는 이미 설정됨
 - axios 설치 완료 (`^1.20.0`, 10/12)
 
 ### 다음 할 일: 화면에 API 연결 (1단계 = specs X0·X1 범위만)
