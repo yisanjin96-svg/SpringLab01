@@ -1,0 +1,10 @@
+# docker compose up -d 후 --spring.profiles.active=postgres 로 실행
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/reservation
+    username: dev
+    password: dev1234
+
+  h2:
+    console:
+      enabled: false
