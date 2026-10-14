@@ -36,10 +36,17 @@ export default function FlightSearchBar() {
    * API : /api/airports 
    */ 
   const {airports, error} = useAirports()
-    // F2 : 到着地の一覧 : 出発地で選んだ空港は除く。（ER002予防）
-    const arrivalAirports = airports.filter(airport => airport.airportCode !== departure)
+  // F2-01 : 到着地の一覧 : 出発地で選んだ空港は除く。（ER002予防）
     // 現在値が単一でセットしているdepartureではないことをFilterする。
-
+    const arrivalAirports = airports.filter(airport => airport.airportCode !== departure)
+    const departureAirports = airports.filter(airport => airport.airportCode !== arrival)
+    // F2-02 : 出発（選択値）が === 到着地同じの場合、到着地(Arrival)の値を空にする。 
+    // const handleDepatureSelect = (airportCode : string) => {
+    //   // 「出発地」の値セットはこの変数(handleDepatureSelect)で行う。
+    //   setDeparture(airportCode)
+    //   if (airportCode === arrival)
+    //     setArrival('')
+    // }
 
   return (
     <div className="search-wrap">
@@ -61,7 +68,7 @@ export default function FlightSearchBar() {
 
       {/* 検索バー */}
       <div className="search-bar">
-        <AirportSelect label="出発地" airports={airports} value={departure} onSelect={setDeparture} />
+        <AirportSelect label="出発地" airports={departureAirports} value={departure} onSelect={setDeparture} />
 
         <div className="search-divider" />
 
