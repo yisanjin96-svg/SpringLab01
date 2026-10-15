@@ -52,12 +52,17 @@ export default function FlightSearchBar() {
     <div className="search-wrap">
       {/* 往復 / 片道 */}
       <div className="search-tabs">
+        {/* X1-UI03 */}
         <button
           className={`search-tab ${tripType === 'roundtrip' ? 'active' : ''}`}
           onClick={() => setTripType('roundtrip')}
-        >
+          >
           往復
         </button>
+        {/* X1-UI04 説明 
+        * 1) X1-UI04をクイックすると「TripType」がonewayになる
+        * 2) 「tripType」が'oneway'の場合、UI08は非活性になる（disabled)
+        */}
         <button
           className={`search-tab ${tripType === 'oneway' ? 'active' : ''}`}
           onClick={() => setTripType('oneway')}
@@ -93,9 +98,15 @@ export default function FlightSearchBar() {
         <div className="search-cell">
           <span className="search-label">大人</span>
           <div className="search-counter">
-            <button className="search-counter-btn" onClick={() => setAdults(v => Math.max(1, v - 1))}>−</button>
+            <button className={`search-counter-btn ${adults === 1 ? 'disabled': ''}`} onClick={() => setAdults(v => Math.max(1, v - 1))} 
+            disabled={adults === 1 || adults == infants} >
+              −
+            </button>
             <span className="search-counter-val">{adults}</span>
-            <button className="search-counter-btn" onClick={() => setAdults(v => v + 1)}>+</button>
+            <button className={`search-counter-btn ${adults >= 9 ? 'disabled': ''}`} onClick={() => setAdults(v => v + 1)}
+              disabled={adults >= 9}>
+                +
+              </button>
           </div>
         </div>
 
@@ -104,9 +115,12 @@ export default function FlightSearchBar() {
         <div className="search-cell">
           <span className="search-label">幼児</span>
           <div className="search-counter">
-            <button className="search-counter-btn" onClick={() => setInfants(v => Math.max(0, v - 1))}>−</button>
+            <button className={`search-counter-btn ${infants === 0 ? 'disabled' : ''}`} onClick={() => setInfants(v => Math.max(0, v - 1))} disabled={infants === 0}>−</button>
             <span className="search-counter-val">{infants}</span>
-            <button className="search-counter-btn" onClick={() => setInfants(v => v + 1)}>+</button>
+            <button className={`search-counter-btn ${infants === adults ? 'disabled' : ''}`} onClick={() => setInfants(v => v + 1)}
+              disabled={infants === adults || infants + adults >= 9 }>
+              +
+            </button>
           </div>
         </div>
 

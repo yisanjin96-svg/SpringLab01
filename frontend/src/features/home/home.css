@@ -144,6 +144,11 @@
   color: #fff;
 }
 
+.search-counter-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
 .search-submit-btn {
   flex-shrink: 0;
   margin: 8px;
