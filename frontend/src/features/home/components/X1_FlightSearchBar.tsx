@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import AirportSelect from './AirportSelect'
+import C1_AirportSelect from './C1_AirportSelect'
 // API
 import { useAirports } from '../hooks/useAirports'
-
+import { useFlights } from '../hooks/useFlights' 
 
 /* 仮（かり）データ：API（GET /api/airports）連携後に差し替える */
   // const DUMMY_AIRPORTS = [
@@ -18,7 +18,7 @@ import { useAirports } from '../hooks/useAirports'
 */ 
 type TripType = 'roundtrip' | 'oneway'
 
-export default function FlightSearchBar() {
+export default function X1_FlightSearchBar() {
   
   /*  
   * React Stateで データバインディングを行う。
@@ -36,6 +36,10 @@ export default function FlightSearchBar() {
    * API : /api/airports 
    */ 
   const {airports, error} = useAirports()
+  // error:flightError 同じ変数を使うとコンパイルエラーが出る 
+  const {flights, error: flightError, search} = useFlights()
+  const [inputError, setInputError] = useState<string | null>(null)
+  
   // F2-01 : 到着地の一覧 : 出発地で選んだ空港は除く。（ER002予防）
     // 現在値が単一でセットしているdepartureではないことをFilterする。
     const arrivalAirports = airports.filter(airport => airport.airportCode !== departure)
@@ -47,6 +51,19 @@ export default function FlightSearchBar() {
     //   if (airportCode === arrival)
     //     setArrival('')
     // }
+
+    const handleSearch = () => {
+      if (departure === '' || arrival === '') {
+        setInputError('出発地・到着地を選択してください。')
+        return
+      }
+      if (departure === arrival) {
+        setInputError('出発地と到着地が同じです。')
+        return
+      }
+    setInputError(null)
+    search(departure, arrival)
+    }
 
   return (
     <div className="search-wrap">
@@ -73,11 +90,11 @@ export default function FlightSearchBar() {
 
       {/* 検索バー */}
       <div className="search-bar">
-        <AirportSelect label="出発地" airports={departureAirports} value={departure} onSelect={setDeparture} />
+        <C1_AirportSelect label="出発地" airports={departureAirports} value={departure} onSelect={setDeparture} />
 
         <div className="search-divider" />
 
-        <AirportSelect label="到着地" airports={arrivalAirports} value={arrival} onSelect={setArrival} />
+        <C1_AirportSelect label="到着地" airports={arrivalAirports} value={arrival} onSelect={setArrival} />
 
         <div className="search-divider" />
 
@@ -105,7 +122,7 @@ export default function FlightSearchBar() {
             <span className="search-counter-val">{adults}</span>
             <button className={`search-counter-btn ${adults >= 9 ? 'disabled': ''}`} onClick={() => setAdults(v => v + 1)}
               disabled={adults >= 9}>
-                +
+              +
               </button>
           </div>
         </div>
@@ -124,9 +141,26 @@ export default function FlightSearchBar() {
           </div>
         </div>
 
-        <button className="search-submit-btn">検索</button>
+        <button className="search-submit-btn" onClick={handleSearch}>検索</button>
       </div>
+      {/* testUI表示 */}
+      <div>
+          {flights && flights.map(f => (
+            <p key={f.id}>
+                {f.flightNumber} 
+                {f.departureAirport} ➝ 
+                {f.arrivalAirport}
+                ({f.departureAt})
+            </p>
+          ))}
+          {/* I001 : 検索はしたが、該当便が0件の場合 */}
+          {flights && flights.length === 0 && <p>条件に合う航空便がありません。</p>}
+      </div>
+      
+      {/* ERROR表示 */}
       {error && <p>{error}</p>}
+      {inputError && <p>{inputError}</p>}
+      {flightError && <p>{flightError}</p>}
     </div>
   )
 }

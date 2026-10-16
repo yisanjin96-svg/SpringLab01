@@ -14,7 +14,7 @@ type Props = {
   onSelect: (airportCode: string) => void
 }
 
-export default function AirportSelect({ label, airports, value, onSelect }: Props) {
+export default function C1_AirportSelect({ label, airports, value, onSelect }: Props) {
   const [open, setOpen] = useState(false)
 
   // 選択中の空港を「羽田空港 (HND)」の形で表示する

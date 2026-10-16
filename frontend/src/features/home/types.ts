@@ -6,3 +6,17 @@ export type AirportResponse = {
     city : string
 }
 
+export type FlightResponse = {
+    id : number,
+    flightNumber : string,
+    departureAirport : string,
+    arrivalAirport : string,
+    departureAt : string,
+    arrivalAt : string,
+
+}
+
+export type ErrorResponse = {
+    code : string,
+    message : string
+}

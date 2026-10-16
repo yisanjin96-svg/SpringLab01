@@ -37,7 +37,7 @@
 }
 
 /* =====================
-   FlightSearchBar
+   X1_FlightSearchBar
    ===================== */
 .search-wrap {
   display: flex;
@@ -164,7 +164,7 @@
 }
 
 /* =====================
-   AirportSelect
+   C1_AirportSelect
    ===================== */
 .airport-select {
   position: relative;

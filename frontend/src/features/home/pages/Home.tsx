@@ -1,5 +1,5 @@
 import '../home.css'
-import FlightSearchBar from '../components/FlightSearchBar'
+import X1_FlightSearchBar from '../components/X1_FlightSearchBar'
 
 
 export default function Home() {
@@ -11,7 +11,7 @@ export default function Home() {
 
       <main className="home-main">
         <h2 className="home-headline">どちらへお出かけですか？</h2>
-        <FlightSearchBar />
+        <X1_FlightSearchBar />
       </main>
     </div>
   )

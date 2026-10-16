@@ -20,5 +20,8 @@ React / TypeScript / Vite / axios
 
 ## 命名
 - コンポーネント: PascalCase（SeatMap.tsx）
+  - 画面専用コンポーネントは `{画面ID}_{PascalCase}`（例: X1_FlightSearchBar）
+  - 共通コンポーネントは `C{番号}_{PascalCase}`（例: C1_AirportSelect）
+  - 番号は設計書の画面一覧・共通部品一覧に従う
 - hooks: use から始める（useFlightSearch.ts）
 - API関数: 動詞から始める（searchFlights, createReservation）
