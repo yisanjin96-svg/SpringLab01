@@ -1,0 +1,257 @@
+/* =====================
+   X2 FlightList Page
+   ===================== */
+.flight-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0d1117 0%, #161b27 60%, #1a2744 100%);
+  font-family: 'Segoe UI', 'Hiragino Sans', 'Yu Gothic UI', 'Meiryo', sans-serif;
+  color: #fff;
+}
+
+.flight-header {
+  padding: 24px 60px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.flight-logo {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #7eb3ff;
+  text-decoration: none;
+}
+
+/* 検索条件バー（スクロールしても上に残す） */
+.flight-summary {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(13, 17, 23, 0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.flight-summary-inner {
+  display: flex;
+  align-items: center;
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 18px 40px;
+}
+
+.flight-summary-route {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.flight-summary-label {
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: #4f8ef7;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.flight-route {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.flight-route-arrow {
+  font-size: 16px;
+  color: #7eb3ff;
+}
+
+.flight-back-btn {
+  margin-left: auto;
+  padding: 9px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 13px;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.flight-back-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.flight-main {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 28px 40px 80px;
+}
+
+.flight-count {
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.flight-count strong {
+  font-size: 18px;
+  color: #fff;
+}
+
+/* =====================
+   X2_FlightTable（カード一覧）
+   ===================== */
+.flight-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.flight-date {
+  margin: 24px 0 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #7eb3ff;
+}
+
+.flight-card {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  margin-bottom: 12px;
+  padding: 22px 28px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  transition: border-color 0.15s, transform 0.15s;
+}
+
+.flight-card:hover {
+  border-color: rgba(79, 142, 247, 0.6);
+  transform: translateY(-2px);
+}
+
+.flight-card-no {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 120px;
+  flex-shrink: 0;
+}
+
+.flight-airline {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.flight-number {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.flight-card-route {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.flight-point {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.flight-time {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.flight-code {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.flight-line {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.flight-duration,
+.flight-direct {
+  font-size: 12px;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* 線 ── ✈ ── : 左右の線を::before/::afterで描き、アイコンと文字が重ならないようにする */
+.flight-line-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.flight-line-bar::before,
+.flight-line-bar::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.flight-plane {
+  font-size: 14px;
+  line-height: 1;
+  color: #7eb3ff;
+}
+
+/* =====================
+   メッセージ（読み込み中・I001・エラー）
+   ===================== */
+.flight-message {
+  padding: 40px 0;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.flight-error {
+  color: #ff8080;
+}
+
+.flight-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 60px 0;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.flight-empty-icon {
+  font-size: 40px;
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.flight-empty .flight-back-btn {
+  margin: 12px 0 0;
+}
+
+/* スマホ幅 */
+@media (max-width: 640px) {
+  .flight-header { padding: 18px 20px; }
+  .flight-summary-inner, .flight-main { padding-inline: 16px; }
+  .flight-route { font-size: 20px; }
+  .flight-card { flex-direction: column; align-items: stretch; gap: 14px; padding: 18px; }
+  .flight-card-no { flex-direction: row; justify-content: space-between; width: auto; }
+  .flight-time { font-size: 22px; }
+}

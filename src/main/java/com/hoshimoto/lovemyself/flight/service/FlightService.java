@@ -1,5 +1,6 @@
 package com.hoshimoto.lovemyself.flight.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class FlightService {
     }
 
     @Transactional(readOnly = true)
-    public List<FlightResponse> searchFlights(String departureAirport, String arrivalAirport) {
+    public List<FlightResponse> searchFlights(String departureAirport, String arrivalAirport, LocalDate depatureDate, LocalDate arrivalDate) {
 
         // 항공편 서비스 메서드 -> 입력값으로 출발지와 도착지를 선택한다.
         // 출발지=도착지가 같으면 ER002 예외를 던진다 → GlobalExceptionHandler가 받아서 400으로 응답
@@ -33,10 +34,16 @@ public class FlightService {
             throw new BusinessException(ErrorCode.ER002);     // 【3】 신고서를 만들어 위로 던짐 → 【4】
         }
         
+        LocalDateTime from = depatureDate.atStartOfDay();
+        /* atStartOfDay(): 日に時分を付けてLocalDateTimeに変更する
+        （2026-10-20）→ （2026-10-20T00:00） */
+        LocalDateTime to = depatureDate.plusDays(1).atStartOfDay();
 
         List<Flight> flights = flightRepository.searchFlights(
             departureAirport,
             arrivalAirport,
+            from,
+            to,
             LocalDateTime.now());
 
         return flights.stream()

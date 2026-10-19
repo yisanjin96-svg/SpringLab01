@@ -2,7 +2,7 @@ import { useState } from 'react'
 import C1_AirportSelect from './C1_AirportSelect'
 // API
 import { useAirports } from '../hooks/useAirports'
-import { useFlights } from '../hooks/useFlights' 
+import { useNavigate } from 'react-router-dom'
 
 /* 仮（かり）データ：API（GET /api/airports）連携後に差し替える */
   // const DUMMY_AIRPORTS = [
@@ -36,8 +36,7 @@ export default function X1_FlightSearchBar() {
    * API : /api/airports 
    */ 
   const {airports, error} = useAirports()
-  // error:flightError 同じ変数を使うとコンパイルエラーが出る 
-  const {flights, error: flightError, search} = useFlights()
+  const navigate = useNavigate()
   const [inputError, setInputError] = useState<string | null>(null)
   
   // F2-01 : 到着地の一覧 : 出発地で選んだ空港は除く。（ER002予防）
@@ -62,7 +61,8 @@ export default function X1_FlightSearchBar() {
         return
       }
     setInputError(null)
-    search(departure, arrival)
+    // X2へ遷移するだけ（APIはX2が呼ぶ）。条件はURLに残す（specs X2）
+    navigate(`/flights?departureAirport=${departure}&arrivalAirport=${arrival}`)
     }
 
   return (
@@ -143,24 +143,9 @@ export default function X1_FlightSearchBar() {
 
         <button className="search-submit-btn" onClick={handleSearch}>検索</button>
       </div>
-      {/* testUI表示 */}
-      <div>
-          {flights && flights.map(f => (
-            <p key={f.id}>
-                {f.flightNumber} 
-                {f.departureAirport} ➝ 
-                {f.arrivalAirport}
-                ({f.departureAt})
-            </p>
-          ))}
-          {/* I001 : 検索はしたが、該当便が0件の場合 */}
-          {flights && flights.length === 0 && <p>条件に合う航空便がありません。</p>}
-      </div>
-      
       {/* ERROR表示 */}
       {error && <p>{error}</p>}
       {inputError && <p>{inputError}</p>}
-      {flightError && <p>{flightError}</p>}
     </div>
   )
 }

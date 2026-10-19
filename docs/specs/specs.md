@@ -13,6 +13,9 @@
 |---|---|---|---|
 | departureAirport | String | ○ | 英大文字3桁（小文字は変換せずER001） |
 | arrivalAirport | String | ○ | 英大文字3桁（小文字は変換せずER001） |
+| arrivalAirport | String | ○ | 英大文字3桁（小文字は変換せずER001） |
+| arrivalAirport | String | ○ | 英大文字3桁（小文字は変換せずER001） |
+
 
 #### 2. 参照テーブル・条件
 
@@ -93,3 +96,61 @@
 |---|---|---|
 | ER001 | 400 | 出発地・到着地を選択してください。 |
 | ER002 | 400 | 出発地と到着地が同じです。 |
+
+
+### X2 機能定義（航空便一覧・第1段階：片道・空港コードのみ）
+
+- 機能 : X1で指定した出発地・到着地の航空便を、出発日時の昇順で一覧表示する
+- 範囲外（次の段階で追加）: 便の選択（X3へ遷移）・残席数・運賃・出発日付・往復・人数
+- 更新テーブル : なし（照会のみ）
+- 新規API : なし（X1の `GET /api/flights` をそのまま使う）
+
+#### 1. 画面遷移
+
+- 画面URL : `/flights?departureAirport=FUK&arrivalAirport=HND`
+- X1の検索ボタン : 入力チェックOKなら、APIは呼ばずに上記URLへ遷移するだけ（`useNavigate`）
+- 検索条件はURLに残すので、ブラウザの戻る・ブックマーク・URL直接入力でも同じ結果を表示できる
+- X2は表示時にURLから条件を取り出し（`useSearchParams`）、`GET /api/flights` を呼ぶ
+
+#### 2. 入力（URL ➝ X2 ➝ サーバー側）
+
+| 引数 | 取り出し元 | 検証 |
+|---|---|---|
+| departureAirport | URLクエリ | クライアントでは検証しない。サーバーの ER001・ER002 をそのまま表示する |
+| arrivalAirport | URLクエリ | 同上 |
+
+- URL直接入力で不正な値が来てもサーバーが検証するので、クライアント側の検証は重複させない
+
+#### 3. 表示項目
+
+| 論理名 | フィールド名 | 表示形式 |
+|---|---|---|
+| 検索条件 | departureAirport, arrivalAirport | `FUK ➝ HND`（URLの値） |
+| 件数 | flights.length | `n件` |
+| 便名 | flightNumber | そのまま |
+| 出発空港 | departureAirport | そのまま |
+| 到着空港 | arrivalAirport | そのまま |
+| 出発日時 | departureAt | `yyyy/MM/dd HH:mm` |
+| 到着日時 | arrivalAt | `yyyy/MM/dd HH:mm` |
+
+- 並び順 : サーバーの返した順（departure_at 昇順）をそのまま使う
+
+#### 4. 例外・境界
+
+| ケース | 表示 |
+|---|---|
+| 結果0件 | I001 : 条件に合う航空便がありません。 |
+| サーバー400（ER001・ER002） | レスポンスの `message` をそのまま表示 |
+| 通信失敗（レスポンスなし） | E010 : 航空便一覧を読み込めませんでした。しばらくしてから再度お試しください。 |
+
+#### 5. 実装メモ（フロント）
+
+- 航空便の呼び出しは `features/flight` に移す（backendの `flight` ドメインと1:1）
+  - `types.ts` : `FlightResponse`, `ErrorResponse`（home から移動）
+  - `api.ts` : `fetchFlights()`（home から移動）
+  - `hooks/useFlights.ts` : home から移動。X2表示時に呼ぶ
+  - `pages/FlightList.tsx` : X2画面
+  - `components/X2_FlightTable.tsx` : 一覧表
+- `features/home` は空港（X0）だけを持ち、X1は遷移だけするので flight を import しない（features間import禁止を守る）
+- `App.tsx` にルーティングを追加 : `/` ➝ Home（X1）, `/flights` ➝ FlightList（X2）
+- X1の testUI（結果リスト・0件メッセージ・flightError）は X2 に移したら削除する

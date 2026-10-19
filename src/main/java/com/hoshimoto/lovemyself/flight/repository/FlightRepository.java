@@ -18,9 +18,13 @@ public interface FlightRepository extends JpaRepository<Flight, Long>{
     + " WHERE f.departureAirport = :departureAirport "
     + " AND f.arrivalAirport = :arrivalAirport" 
     + " AND f.departureAt >= :now" 
+    + " AND f.departureAt >= :from"
+    + " AND f.departureAt < :to"
     + " ORDER BY f.departureAt ASC")
     public List<Flight> searchFlights(
         @Param("departureAirport") String departureAirport, 
         @Param("arrivalAirport") String arrivalAirport,
+        @Param ("from") LocalDateTime from,
+        @Param ("to") LocalDateTime to,
         @Param("now") LocalDateTime now);
 }

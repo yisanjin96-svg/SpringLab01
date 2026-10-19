@@ -1,51 +1,54 @@
 # 화면 정의서 (loveMyself Air 목업)
 
-## 진행 현황 (2026-10-12 기준)
+## 진행 현황 (2026-10-16 기준)
 
 ### 백엔드 API (완성)
 
 | 기능 | API | 화면에서 쓰는 곳 | 상태 |
 |---|---|---|---|
-| X0 공항 목록 | `GET /api/airports` → `List<AirportResponse>` | 검색 바의 출발지·도착지 드롭다운 | ✅ 완성 · 실행 확인 |
-| X1 항공편 검색 | `GET /api/flights?departureAirport=FUK&arrivalAirport=HND` → `List<FlightResponse>` | 검색 결과 목록 | ✅ 완성 · 실행 확인 |
-| 공통 에러 | `400 {"code": "ER001", "message": "..."}` | 검색 실패 시 메시지 표시 | ✅ 완성 (실행 확인 전) |
+| X0 공항 목록 | `GET /api/airports` → `List<AirportResponse>` | X1 출발지·도착지 드롭다운 | ✅ 완성 · 실행 확인 |
+| X1 항공편 검색 | `GET /api/flights?departureAirport=FUK&arrivalAirport=HND` → `List<FlightResponse>` | X2 항공편 목록 | ✅ 완성 · 실행 확인 |
+| 공통 에러 | `400 {"code": "ER001", "message": "..."}` | X1 입력 에러, X2 서버 에러 표시 | ✅ 완성 · 실행 확인 |
 
-자세한 입출력: [docs/specs/specs.md](../docs/specs/specs.md)
+자세한 입출력: [docs/specs/specs.md](../docs/specs/specs.md) (X0·X1·X2)
+설계서: `doc/excel/화면설계서_X1_항공편검색.xlsx`, `doc/excel/화면설계서_X2_항공편목록.xlsx`
 
-### 프론트 현재 상태
+### 화면 (1단계 = 편도·공항 코드만)
 
-- 실제 있는 파일: `App.tsx` → `features/home/pages/Home.tsx` → `features/home/components/FlightSearchBar.tsx`
-- 검색 바는 **화면만 있고 API 연결 없음** (출발지·도착지가 글자 입력칸, 검색 버튼 동작 없음)
-- 아래 "화면 목록"의 `src/pages`, `src/mock` 등은 예전 목업 기준이라 **지금 폴더에는 없음**
-- `vite.config.ts`에 `/api` → `localhost:8001` 프록시는 이미 설정됨
-- axios 설치 완료 (`^1.20.0`, 10/12)
-
-### 다음 할 일: 화면에 API 연결 (1단계 = specs X0·X1 범위만)
-
-1단계 범위는 편도, 공항 코드만. 날짜·왕복·인원은 화면에 있어도 **API로 보내지 않는다** (specs의 범위 밖).
-
-| 순서 | 할 일 | 연결할 API | 화면 변화 |
+| 화면 | 경로 | 페이지 | 상태 |
 |---|---|---|---|
-| F1 | 출발지·도착지 입력칸을 **드롭다운**으로 바꾸기 | X0 | 공항 목록이 `福岡空港 (FUK)` 형태로 보임 |
-| F2 | 도착지 드롭다운에서 **출발지로 고른 공항 빼기** | — | 같은 공항을 고를 수 없음 (ER002 예방) |
-| F3 | 검색 버튼 → 항공편 검색 | X1 | 결과 목록 표시 (편명, 출발·도착 시각) |
-| F4 | 결과 0건 / 에러 메시지 표시 | X1 | "검색 결과가 없습니다" / ER001·ER002 메시지 |
+| X1 항공편 검색(홈) | `/` | `features/home/pages/Home.tsx` | ✅ 드롭다운(X0)·입력 체크·X2로 이동 |
+| X2 항공편 목록 | `/flights?departureAirport=…&arrivalAirport=…` | `features/flight/pages/FlightList.tsx` | ✅ 작성 (브라우저 확인 필요) |
+| X3 | — | — | 미정 (X2에서 항공편 선택 후 이동, 2단계) |
 
-### 시작 전에 제이님이 정할 것
+### 화면 흐름
 
-1. **파일 위치:** `frontend/CLAUDE.md` 규칙상 `features` 끼리는 서로 import할 수 없음. 검색 바는 `home`에 있는데 공항(X0)·항공편(X1)을 불러와야 함 → 아래 중 하나로 정하기
-   - (가) `features/home` 안에 공항·항공편 호출 코드를 같이 두기
-   - (나) `features/airport`, `features/flight`를 만들고, `home`은 그것들을 조립만 하는 화면으로 규칙에 예외 두기
-2. **F1 정의 글로 쓰기 (수칙 1번):** 어떤 API를 언제 부르고, 받은 어떤 값을 화면 어디에 보여 주는지
+```
+X1 검색 버튼 ─(입력 체크 OK)→ navigate('/flights?departureAirport=…&arrivalAirport=…')
+X2 표시 ─ useSearchParams로 조건 꺼냄 → GET /api/flights → 목록 / 0건(I001) / 에러(ER001·ER002·E010)
+```
 
-### F1에서 만들 파일 (예상, 위 1번 결정에 따라 위치 달라짐)
+- X1은 API를 부르지 않고 이동만 한다. 조건이 URL에 남으므로 뒤로 가기·북마크로 같은 결과를 볼 수 있다.
 
-| 파일 | 역할 | 백엔드로 치면 |
+### 파일 구성
+
+| feature | 파일 | 역할 |
 |---|---|---|
-| `types.ts` | `AirportResponse` 타입 (백엔드 DTO와 같은 이름·필드) | dto |
-| `api.ts` | `fetchAirports()` — `/api/airports` 호출 | (controller를 부르는 쪽) |
-| `hooks/useAirports.ts` | 화면이 처음 뜰 때 한 번 불러서 목록을 들고 있음 | service |
-| `FlightSearchBar.tsx` | 드롭다운에 목록을 그림 | 화면 |
+| home | `types.ts` / `api.ts` / `hooks/useAirports.ts` | X0 공항 목록 |
+| home | `components/X1_FlightSearchBar.tsx` | X1 검색바 (화면 전용) |
+| home | `components/C1_AirportSelect.tsx` | 공항 드롭다운 (공통 부품) |
+| flight | `types.ts` / `api.ts` / `hooks/useFlights.ts` | X1 API(항공편 검색) 호출 |
+| flight | `components/X2_FlightTable.tsx` | X2 목록 표 (화면 전용) |
+| flight | `pages/FlightList.tsx` | X2 화면 |
+
+- 명명 규칙: 화면 전용 `{画面ID}_{PascalCase}`, 공통 `C{番号}_{PascalCase}` (frontend/CLAUDE.md)
+- features끼리는 import하지 않는다. 화면 이동은 URL로만 연결한다.
+
+### 다음 할 일
+
+1. X2 브라우저 확인 (HND→ICN 1건, FUK→HND 0건 I001, URL에 소문자 `fuk` 직접 입력 시 ER001)
+2. X2 2단계 정의: 항공편 선택 → X3, 남은 좌석 수 (`idx_seat_flight_status` 사용)
+3. X1 2단계: 출발일·왕복·인원을 API로 보내기
 
 ---
 

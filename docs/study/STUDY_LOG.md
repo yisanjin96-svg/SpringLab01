@@ -95,3 +95,8 @@
 - 배운 것 : 검색 전(`null`)과 결과 0건(`[]`)을 나눠야 0건 메시지를 띄울 수 있다는 것, 파일 이름을 바꾸면 IDE에 열린 옛 탭을 저장했을 때 옛 파일이 다시 생긴다는 걸 배웠다
 - 구현한 것 : 클린 아키텍처 22장(인터페이스 어댑터)이 들어간 `X1_FlightSearchBar`에 검색 버튼 연결·입력 검사·결과 표시·0건 메시지(I001)를 구현했다 (직접 작성 + 따라 침)
 - 피드백 : 코드가 안 뜰 때 "어느 파일이 실제로 화면에 쓰이는지"부터 확인하는 습관 필요. 그리고 질문 2개(`flights &&`를 빼면? 왜 `null`인가?)는 이번에도 건너뜀.
+
+## 2026-10-16 항공편 목록(X2) / types · api · hook · component · page (프론트)
+- 배운 것 : 검색 화면(X1)은 조건을 URL에 실어 이동만 하고, 결과 화면(X2)이 URL에서 조건을 꺼내 API를 부르는 규칙을 배웠다 (`useNavigate` ➝ `useSearchParams`)
+- 구현한 것 : 클린 아키텍처 22장(인터페이스 어댑터)이 들어간 `features/flight`(types·api·`useFlights`·`X2_FlightTable`·`FlightList`)와 `App.tsx` 라우팅을 구현했다 (AI가 작성)
+- 피드백 : 이번엔 AI가 전부 쳤음. 수칙 4번대로 `useFlights`의 `useEffect` 뒤 `[departureAirport, arrivalAirport]`가 왜 있는지부터 자기 말로 설명해 보기.
