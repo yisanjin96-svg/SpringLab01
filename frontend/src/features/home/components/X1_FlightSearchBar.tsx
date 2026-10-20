@@ -52,6 +52,7 @@ export default function X1_FlightSearchBar() {
     // }
 
     const handleSearch = () => {
+
       if (departure === '' || arrival === '') {
         setInputError('出発地・到着地を選択してください。')
         return
@@ -60,9 +61,29 @@ export default function X1_FlightSearchBar() {
         setInputError('出発地と到着地が同じです。')
         return
       }
+      // 往路日は必須
+      if (departureDate === '') {
+        setInputError('往路日を選択してください。')
+        return
+      }
+      // 往復のときだけ復路日も必須
+      if (tripType === 'roundtrip' && returnDate === '') {
+        setInputError('復路日を選択してください。')
+        return
+      }
     setInputError(null)
-    // X2へ遷移するだけ（APIはX2が呼ぶ）。条件はURLに残す（specs X2）
-    navigate(`/flights?departureAirport=${departure}&arrivalAirport=${arrival}`)
+    
+    // X2へ遷移するだけ（APIはX2が呼ぶ）。検索条件は全部URLに残す（specs X2）
+    const params = new URLSearchParams({
+      tripType,
+      departureAirport: departure,
+      arrivalAirport: arrival,
+      departureDate,
+      returnDate: tripType === 'roundtrip' ? returnDate : '',
+      adults: String(adults),
+      infants: String(infants),
+    })
+    navigate(`/flights?${params.toString()}`)
     }
 
   return (

@@ -1,19 +1,28 @@
 import { Link, useSearchParams } from 'react-router-dom'
 import '../flight.css'
-import X2_FlightTable from '../components/X2_FlightTable'
+import X2_FlightSection from '../components/X2_FlightSection'
 import { useFlights } from '../hooks/useFlights'
 
 /**
  * X2 航空便一覧（specs X2）
- * URLの条件で GET /api/flights を呼び、結果を一覧表示する。
+ * 往復なら 往路（出発地➝到着地・往路日）と 復路（到着地➝出発地・復路日）の2回 GET /api/flights を呼ぶ。
  */
 export default function FlightList() {
-  // 項目 No.2 : URLクエリ（/flights?departureAirport=FUK&arrivalAirport=HND）から条件を取り出す
+  // 項目 No.2 : URLクエリから条件を取り出す
   const [searchParams] = useSearchParams()
+  const tripType = searchParams.get('tripType') ?? 'oneway'
   const departureAirport = searchParams.get('departureAirport') ?? ''
   const arrivalAirport = searchParams.get('arrivalAirport') ?? ''
+  const departureDate = searchParams.get('departureDate') ?? ''
+  const returnDate = searchParams.get('returnDate') ?? ''
+  
+  // tripTypeが 'roundtrip' true = isRoundtrip  
+  const isRoundtrip = tripType === 'roundtrip'
 
-  const { flights, error } = useFlights(departureAirport, arrivalAirport)
+  // 往路 : 出発地 ➝ 到着地
+  const outbound = useFlights(departureAirport, arrivalAirport, departureDate)
+  // 復路 : 空港を逆にして復路日で検索（片道なら日付を空にして呼ばない）
+  const inbound = useFlights(arrivalAirport, departureAirport, isRoundtrip ? returnDate : '')
 
   return (
     <div className="flight-page">
@@ -26,7 +35,7 @@ export default function FlightList() {
       <section className="flight-summary">
         <div className="flight-summary-inner">
           <div className="flight-summary-route">
-            <span className="flight-summary-label">片道</span>
+            <span className="flight-summary-label">{isRoundtrip ? '往復' : '片道'}</span>
             {/* 項目 No.2 : 検索条件 */}
             <span className="flight-route">
               {departureAirport}<span className="flight-route-arrow">✈</span>{arrivalAirport}
@@ -38,26 +47,10 @@ export default function FlightList() {
       </section>
 
       <main className="flight-main">
-        {/* 読み込み中 */}
-        {!flights && !error && <p className="flight-message">航空便を検索しています…</p>}
-
-        {/* 項目 No.3 : 件数（0件・エラーのときは出さない） */}
-        {flights && flights.length > 0 && (
-          <p className="flight-count"><strong>{flights.length}</strong>件の航空便が見つかりました</p>
+        <X2_FlightSection title={`往路 ${departureDate}`} flights={outbound.flights} error={outbound.error} />
+        {isRoundtrip && (
+          <X2_FlightSection title={`復路 ${returnDate}`} flights={inbound.flights} error={inbound.error} />
         )}
-
-        {/* 項目 No.4〜8 : 一覧 */}
-        {flights && flights.length > 0 && <X2_FlightTable flights={flights} />}
-
-        {/* 項目 No.10 : メッセージ */}
-        {flights && flights.length === 0 && (
-          <div className="flight-empty">
-            <span className="flight-empty-icon">✈</span>
-            <p>条件に合う航空便がありません。</p>
-            <Link to="/" className="flight-back-btn">検索条件を変更</Link>
-          </div>
-        )}
-        {error && <p className="flight-message flight-error">{error}</p>}
       </main>
     </div>
   )

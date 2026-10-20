@@ -5,19 +5,27 @@ import { fetchFlights } from "../api";
 
 // X2 表示時に航空便一覧を取得して持っておく（specs X2）
 // クリーンアーキテクチャ 20章 : ユースケースに近い役割
-export function useFlights(departureAirport: string, arrivalAirport: string) {
+export function useFlights(
+    departureAirport: string, 
+    arrivalAirport: string, 
+    depatureDate: string ) {
     // null = まだ結果が届いていない、[] = 結果0件（I001）
     const [flights, setFlights] = useState<FlightResponse[] | null>(null)
     const [error, setError] = useState<string | null>(null)
 
     // URLの条件が変わったら（初回表示も含む）もう一度呼ぶ
     useEffect(() => {
+
+        if (depatureDate === '') {
+            return
+        }
+
         const load = async () => {
             // 前の検索結果が残らないように空にする
             setFlights(null)
             setError(null)
             try {
-                const data = await fetchFlights(departureAirport, arrivalAirport)
+                const data = await fetchFlights(departureAirport, arrivalAirport, depatureDate)
                 setFlights(data)
             } catch (e) {
                 if (axios.isAxiosError<ErrorResponse>(e) && e.response) {
@@ -30,7 +38,7 @@ export function useFlights(departureAirport: string, arrivalAirport: string) {
             }
         }
         load()
-    }, [departureAirport, arrivalAirport])
+    }, [departureAirport, arrivalAirport, depatureDate])
 
     return { flights, error }
 }
