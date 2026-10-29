@@ -27,16 +27,19 @@ public class FlightController {
         this.flightService = flightService;
     }
 
+    // GET・API
     @GetMapping
+    // 公開できる、レスポンスエンティティとしてもらう、タイプはFlightResponse
     public ResponseEntity<List<FlightResponse>> searchFlights(
-        // 【A1】 대문자 3글자가 아니면 스프링이 HandlerMethodValidationException을 던짐 → 【A2】
+        // リクエストのdepautreAirportが大文字ではなければ、エラーを投げる
         @RequestParam @Pattern(regexp = "^[A-Z]{3}$") String departureAirport,
+        // リクエストのarrivalAirportが大文字ではなければ、エラーを投げる
         @RequestParam @Pattern(regexp = "^[A-Z]{3}$") String arrivalAirport,
-        @RequestParam @DateTimeFormat (iso = DateTimeFormat.ISO.DATE) LocalDate departureDate,
-        @RequestParam @DateTimeFormat (iso = DateTimeFormat.ISO.DATE) LocalDate arrivalDate
+        // 往復の復路はフロントが空港を逆にして復路日で同じAPIをもう一度呼ぶ
+        @RequestParam @DateTimeFormat (iso = DateTimeFormat.ISO.DATE) LocalDate departureDate
     )
     {
-        return ResponseEntity.ok(flightService.searchFlights(departureAirport, arrivalAirport, departureDate, arrivalDate));
+        return ResponseEntity.ok(flightService.searchFlights(departureAirport, arrivalAirport, departureDate));
     }
     
 }
