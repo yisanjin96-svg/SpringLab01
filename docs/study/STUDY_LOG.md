@@ -100,3 +100,8 @@
 - 배운 것 : 검색 화면(X1)은 조건을 URL에 실어 이동만 하고, 결과 화면(X2)이 URL에서 조건을 꺼내 API를 부르는 규칙을 배웠다 (`useNavigate` ➝ `useSearchParams`)
 - 구현한 것 : 클린 아키텍처 22장(인터페이스 어댑터)이 들어간 `features/flight`(types·api·`useFlights`·`X2_FlightTable`·`FlightList`)와 `App.tsx` 라우팅을 구현했다 (AI가 작성)
 - 피드백 : 이번엔 AI가 전부 쳤음. 수칙 4번대로 `useFlights`의 `useEffect` 뒤 `[departureAirport, arrivalAirport]`가 왜 있는지부터 자기 말로 설명해 보기.
+
+## 2026-10-20 왕복 검색 연결 / controller · service · api · hook · component · page
+- 배운 것 : 왕복은 편도 검색 2번(가는 편 = 출발일, 오는 편 = 공항을 뒤집고 복귀일)이라 API에는 날짜 1개만 있으면 된다는 것, 쓰지 않는 필수 파라미터 하나 때문에 화면 전체가 400이 될 수 있다는 걸 배웠다
+- 구현한 것 : 클린 아키텍처 22장(인터페이스 어댑터)이 들어간 `departureDate` 검색 연결과 X2 往路·復路 2단 표시(`X2_FlightSection`)를 구현했다 (`useFlights`는 직접 작성, 나머지는 AI가 작성)
+- 피드백 : `depatureDate` 오타를 서비스와 hook에서 똑같이 냄. 이름을 쓰고 나면 한 번 소리 내서 읽어 보기, 그리고 수칙 4번대로 `useFlights`의 `if (departureDate === '') return`이 왜 있는지 설명해 보기.
