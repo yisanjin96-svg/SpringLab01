@@ -26,7 +26,7 @@ public class FlightService {
     }
 
     @Transactional(readOnly = true)
-    public List<FlightResponse> searchFlights(String departureAirport, String arrivalAirport, LocalDate depatureDate, LocalDate arrivalDate) {
+    public List<FlightResponse> searchFlights(String departureAirport, String arrivalAirport, LocalDate departureDate) {
 
         // 항공편 서비스 메서드 -> 입력값으로 출발지와 도착지를 선택한다.
         // 출발지=도착지가 같으면 ER002 예외를 던진다 → GlobalExceptionHandler가 받아서 400으로 응답
@@ -34,10 +34,10 @@ public class FlightService {
             throw new BusinessException(ErrorCode.ER002);     // 【3】 신고서를 만들어 위로 던짐 → 【4】
         }
         
-        LocalDateTime from = depatureDate.atStartOfDay();
+        LocalDateTime from = departureDate.atStartOfDay();
         /* atStartOfDay(): 日に時分を付けてLocalDateTimeに変更する
         （2026-10-20）→ （2026-10-20T00:00） */
-        LocalDateTime to = depatureDate.plusDays(1).atStartOfDay();
+        LocalDateTime to = departureDate.plusDays(1).atStartOfDay();
 
         List<Flight> flights = flightRepository.searchFlights(
             departureAirport,
