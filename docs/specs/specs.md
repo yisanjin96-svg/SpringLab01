@@ -1,20 +1,21 @@
-### X1 機能定義（第1段階：片道・空港コードのみ）
+### X1 機能定義（第2段階：出発日付・往復を追加）
 
-- 機能 : 出発地➝到着地のみ、出発便名リストを照会する
-- 範囲外（次の段階で追加）: 出発日付・往復・人数・都市名検索・空港名表示・ページング
+- 機能 : 出発地➝到着地・出発日で、出発便名リストを照会する
+- 範囲外（次の段階で追加）: 人数・都市名検索・空港名表示・ページング
 - 更新テーブル : なし（照会のみ）
 
 #### 1. 入力（クライアント側➝サーバー側）
 
-- リクエスト : `GET /api/flights?departureAirport=FUK&arrivalAirport=HND`
+- リクエスト : `GET /api/flights?departureAirport=FUK&arrivalAirport=HND&departureDate=2026-10-20`
 - 空港はプルダウン（X0）から選択するため、画面から不正な値は入らない。ただしAPIは直接呼び出せるのでサーバー側でも検証する
 
 | 引数 | 型 | 必須 | 検証 |
 |---|---|---|---|
 | departureAirport | String | ○ | 英大文字3桁（小文字は変換せずER001） |
 | arrivalAirport | String | ○ | 英大文字3桁（小文字は変換せずER001） |
-| arrivalAirport | String | ○ | 英大文字3桁（小文字は変換せずER001） |
-| arrivalAirport | String | ○ | 英大文字3桁（小文字は変換せずER001） |
+| departureDate | LocalDate | ○ | `yyyy-MM-dd`（ISO形式）。なしはER001。形式エラー（例: 2026/10/20）は未対応（ハンドラ未定義） |
+
+- 往復の場合 : 復路はフロントが出発地・到着地を逆にし、復路日を `departureDate` に入れて同じAPIをもう一度呼ぶ（APIの日付引数は1つだけ）
 
 
 #### 2. 参照テーブル・条件
@@ -22,6 +23,7 @@
 - 参照テーブル : `flight`
 - WHERE条件 : `departure_airport` = 完全一致 AND `arrival_airport` = 完全一致
 - AND `departure_at` >= 現在日時（出発済みの便は除外。現在日時はserviceから引数で渡す）
+- AND `departure_at` >= 出発日 00:00 AND `departure_at` < 出発日の翌日 00:00（serviceで `LocalDate` ➝ `LocalDateTime` に変換して渡す）
 - SORT : `departure_at` 昇順
 
 #### 3. 出力（サーバー側➝クライアント側）
