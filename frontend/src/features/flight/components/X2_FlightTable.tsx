@@ -1,7 +1,11 @@
-import type { FlightResponse } from '../types'
+import X2_FareCell from './X2_FareCell'
+import { getDummyFares } from '../fare'
+import type { FlightResponse, SelectedFare } from '../types'
 
 type Props = {
   flights: FlightResponse[]
+  selected: SelectedFare | null
+  onSelect: (fare: SelectedFare) => void
 }
 
 // 「2026-10-01T09:00:00」➝「09:00」
@@ -28,7 +32,7 @@ function formatDuration(departureAt: string, arrivalAt: string) {
  * X2-01 航空便一覧（画面項目定義 No.4〜8）
  * クリーンアーキテクチャ 22章 : 受け取ったデータを表示するだけ（取得は hook の役割）
  */
-export default function X2_FlightTable({ flights }: Props) {
+export default function X2_FlightTable({ flights, selected, onSelect }: Props) {
   return (
     <ul className="flight-list">
       {flights.map((f, i) => {
@@ -61,6 +65,24 @@ export default function X2_FlightTable({ flights }: Props) {
                   <span className="flight-time">{formatTime(f.arrivalAt)}</span>
                   <span className="flight-code">{f.arrivalAirport}</span>
                 </div>
+              </div>
+
+              {/* 座席クラス別の運賃・残席 */}
+              <div className="flight-card-fares">
+                {/* TODO: 백엔드 연결 후 getDummyFares(f.id)를 f.fares로 바꾼다 */}
+                {getDummyFares(f.id).map(fare => (
+                  <X2_FareCell
+                    key={fare.seatClass}
+                    fare={fare}
+                    selected={selected?.flightId === f.id && selected.seatClass === fare.seatClass}
+                    onSelect={() => onSelect({
+                      flightId: f.id,
+                      flightNumber: f.flightNumber,
+                      seatClass: fare.seatClass,
+                      amount: fare.amount,
+                    })}
+                  />
+                ))}
               </div>
             </div>
           </li>

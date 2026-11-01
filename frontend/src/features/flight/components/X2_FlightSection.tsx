@@ -1,14 +1,16 @@
 import X2_FlightTable from './X2_FlightTable'
-import type { FlightResponse } from '../types'
+import type { FlightResponse, SelectedFare } from '../types'
 
 // 往路・復路のひとつ分（見出し・件数・一覧・0件・エラー）を表示する
 type Props = {
   title: string
   flights: FlightResponse[] | null
   error: string | null
+  selected: SelectedFare | null
+  onSelect: (fare: SelectedFare) => void
 }
 
-export default function X2_FlightSection({ title, flights, error }: Props) {
+export default function X2_FlightSection({ title, flights, error, selected, onSelect }: Props) {
   return (
     <section>
       <h2>{title}</h2>
@@ -19,7 +21,7 @@ export default function X2_FlightSection({ title, flights, error }: Props) {
       {flights && flights.length > 0 && (
         <>
           <p className="flight-count"><strong>{flights.length}</strong>件の航空便が見つかりました</p>
-          <X2_FlightTable flights={flights} />
+          <X2_FlightTable flights={flights} selected={selected} onSelect={onSelect} />
         </>
       )}
 

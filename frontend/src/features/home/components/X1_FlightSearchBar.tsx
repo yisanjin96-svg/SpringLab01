@@ -1,17 +1,10 @@
 import { useState } from 'react'
-import C1_AirportSelect from './C1_AirportSelect'
+import C1_AirportSelect from '../../../components/C1_AirportSelect'
 // API
 import { useAirports } from '../hooks/useAirports'
 import { useNavigate } from 'react-router-dom'
 
-/* 仮（かり）データ：API（GET /api/airports）連携後に差し替える */
-  // const DUMMY_AIRPORTS = [
-  //   { airportCode: 'HND', name: '羽田空港', city: '東京' },
-  //   { airportCode: 'FUK', name: '福岡空港', city: '福岡' },
-  //   { airportCode: 'KIX', name: '関西国際空港', city: '大阪' },
-  // ]
-
-/* 
+/*
 * ユニオン型 = Optionみたいな
 * 'roundtrip'= 往復
 * 'oneway'= 片道
@@ -43,13 +36,6 @@ export default function X1_FlightSearchBar() {
     // 現在値が単一でセットしているdepartureではないことをFilterする。
     const arrivalAirports = airports.filter(airport => airport.airportCode !== departure)
     const departureAirports = airports.filter(airport => airport.airportCode !== arrival)
-    // F2-02 : 出発（選択値）が === 到着地同じの場合、到着地(Arrival)の値を空にする。 
-    // const handleDepatureSelect = (airportCode : string) => {
-    //   // 「出発地」の値セットはこの変数(handleDepatureSelect)で行う。
-    //   setDeparture(airportCode)
-    //   if (airportCode === arrival)
-    //     setArrival('')
-    // }
 
     const handleSearch = () => {
 
@@ -137,7 +123,7 @@ export default function X1_FlightSearchBar() {
           <span className="search-label">大人</span>
           <div className="search-counter">
             <button className={`search-counter-btn ${adults === 1 ? 'disabled': ''}`} onClick={() => setAdults(v => Math.max(1, v - 1))} 
-            disabled={adults === 1 || adults == infants} >
+            disabled={adults === 1 || adults === infants} >
               −
             </button>
             <span className="search-counter-val">{adults}</span>

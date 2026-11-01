@@ -2,22 +2,24 @@
    X2 FlightList Page
    ===================== */
 .flight-page {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
-  background: linear-gradient(135deg, #0d1117 0%, #161b27 60%, #1a2744 100%);
+  background: var(--gray-bg);
   font-family: 'Segoe UI', 'Hiragino Sans', 'Yu Gothic UI', 'Meiryo', sans-serif;
-  color: #fff;
+  color: var(--text);
 }
 
 .flight-header {
-  padding: 24px 60px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 18px 40px;
+  background: var(--green-900);
 }
 
 .flight-logo {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
-  letter-spacing: 1px;
-  color: #7eb3ff;
+  letter-spacing: 2px;
+  color: #fff;
   text-decoration: none;
 }
 
@@ -26,17 +28,17 @@
   position: sticky;
   top: 0;
   z-index: 10;
-  background: rgba(13, 17, 23, 0.85);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: #fff;
+  border-bottom: 1px solid var(--gray-line);
+  box-shadow: 0 2px 8px rgba(11, 61, 46, 0.06);
 }
 
 .flight-summary-inner {
   display: flex;
   align-items: center;
-  max-width: 880px;
+  max-width: 1040px;
   margin: 0 auto;
-  padding: 18px 40px;
+  padding: 14px 40px;
 }
 
 .flight-summary-route {
@@ -47,56 +49,69 @@
 
 .flight-summary-label {
   padding: 4px 12px;
-  border-radius: 20px;
-  background: #4f8ef7;
+  border-radius: 4px;
+  background: var(--green-100);
+  color: var(--green-700);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .flight-route {
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
   letter-spacing: 1px;
 }
 
 .flight-route-arrow {
-  font-size: 16px;
-  color: #7eb3ff;
+  font-size: 15px;
+  color: var(--green-600);
 }
 
 .flight-back-btn {
   margin-left: auto;
   padding: 9px 18px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 8px;
-  color: #fff;
+  border: 1px solid var(--green-700);
+  border-radius: 6px;
+  color: var(--green-700);
   font-size: 13px;
+  font-weight: 600;
   text-decoration: none;
   transition: background 0.15s;
 }
 
 .flight-back-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--green-100);
 }
 
 .flight-main {
-  max-width: 880px;
+  flex: 1;
+  width: 100%;
+  max-width: 1040px;
   margin: 0 auto;
-  padding: 28px 40px 80px;
+  padding: 32px 40px 48px;
+}
+
+.flight-main section + section {
+  margin-top: 44px;
+}
+
+.flight-main h2 {
+  font-size: 20px;
+  font-weight: 700;
 }
 
 .flight-count {
-  margin: 0 0 8px;
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.6);
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--text-sub);
 }
 
 .flight-count strong {
-  font-size: 18px;
-  color: #fff;
+  font-size: 15px;
+  color: var(--green-700);
 }
 
 /* =====================
@@ -104,47 +119,42 @@
    ===================== */
 .flight-list {
   list-style: none;
-  margin: 0;
-  padding: 0;
 }
 
 .flight-date {
-  margin: 24px 0 10px;
-  font-size: 14px;
-  font-weight: 600;
-  color: #7eb3ff;
+  margin: 20px 0 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-sub);
 }
 
+/* 運賃セルをカードの右端まで広げるため、余白はカードではなく中の部品に持たせる */
 .flight-card {
   display: flex;
-  align-items: center;
-  gap: 32px;
+  align-items: stretch;
   margin-bottom: 12px;
-  padding: 22px 28px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 14px;
-  transition: border-color 0.15s, transform 0.15s;
-}
-
-.flight-card:hover {
-  border-color: rgba(79, 142, 247, 0.6);
-  transform: translateY(-2px);
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid var(--gray-line);
+  border-radius: 10px;
+  box-shadow: var(--shadow-card);
 }
 
 .flight-card-no {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 4px;
-  width: 120px;
+  width: 136px;
   flex-shrink: 0;
+  padding: 20px 0 20px 24px;
 }
 
 .flight-airline {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.8px;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--text-sub);
 }
 
 .flight-number {
@@ -156,7 +166,8 @@
   flex: 1;
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
+  padding: 20px 24px;
 }
 
 .flight-point {
@@ -167,15 +178,15 @@
 }
 
 .flight-time {
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 700;
-  letter-spacing: -0.5px;
+  font-variant-numeric: tabular-nums;
 }
 
 .flight-code {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--text-sub);
 }
 
 .flight-line {
@@ -183,21 +194,21 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
 }
 
 .flight-duration,
 .flight-direct {
-  font-size: 12px;
+  font-size: 11px;
   line-height: 1;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-sub);
 }
 
 /* 線 ── ✈ ── : 左右の線を::before/::afterで描き、アイコンと文字が重ならないようにする */
 .flight-line-bar {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   width: 100%;
 }
 
@@ -206,13 +217,161 @@
   content: '';
   flex: 1;
   height: 1px;
-  background: rgba(255, 255, 255, 0.25);
+  background: var(--gray-line);
 }
 
 .flight-plane {
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1;
-  color: #7eb3ff;
+  color: var(--green-600);
+}
+
+/* =====================
+   X2_FareCell（座席クラス別の運賃）
+   ===================== */
+.flight-card-fares {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.fare-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 132px;
+  padding: 14px 8px;
+  background: #fff;
+  border: none;
+  border-left: 1px solid var(--gray-line);
+  color: var(--text);
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.fare-cell:hover:not(:disabled) {
+  background: var(--green-100);
+}
+
+.fare-cell:focus-visible {
+  outline: 2px solid var(--green-600);
+  outline-offset: -2px;
+}
+
+.fare-cell.selected,
+.fare-cell.selected:hover:not(:disabled) {
+  background: var(--green-700);
+  color: #fff;
+}
+
+.fare-cell:disabled {
+  background: #f1f3f2;
+  color: #5f6b67;
+  cursor: not-allowed;
+}
+
+.fare-class {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-sub);
+}
+
+.fare-amount {
+  font-size: 17px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.fare-seats {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--green-700);
+}
+
+.fare-cell.selected .fare-class,
+.fare-cell.selected .fare-seats {
+  color: #fff;
+}
+
+.fare-cell:disabled .fare-class,
+.fare-cell:disabled .fare-seats {
+  color: inherit;
+}
+
+/* =====================
+   X2_SelectionBar（画面の下に固定）
+   ===================== */
+.selection-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  background: #fff;
+  border-top: 1px solid var(--gray-line);
+  box-shadow: 0 -4px 16px rgba(11, 61, 46, 0.08);
+}
+
+.selection-bar-inner {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 12px 40px;
+}
+
+.selection-list {
+  flex: 1;
+  display: flex;
+  gap: 40px;
+}
+
+.selection-list dt {
+  font-size: 11px;
+  color: var(--text-sub);
+}
+
+.selection-list dd {
+  margin-top: 2px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.selection-list dd.selection-total {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--green-700);
+  font-variant-numeric: tabular-nums;
+}
+
+.selection-next-btn {
+  padding: 13px 44px;
+  background: var(--green-700);
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.selection-next-btn:hover:not(:disabled) {
+  background: var(--green-900);
+}
+
+.selection-next-btn:focus-visible {
+  outline: 2px solid var(--green-600);
+  outline-offset: 2px;
+}
+
+.selection-next-btn:disabled {
+  background: #dfe5e2;
+  color: #5f6b67;
+  cursor: not-allowed;
 }
 
 /* =====================
@@ -221,11 +380,11 @@
 .flight-message {
   padding: 40px 0;
   text-align: center;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-sub);
 }
 
 .flight-error {
-  color: #ff8080;
+  color: #c0392b;
 }
 
 .flight-empty {
@@ -233,25 +392,41 @@
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  padding: 60px 0;
-  color: rgba(255, 255, 255, 0.7);
+  margin-top: 16px;
+  padding: 48px 0;
+  background: #fff;
+  border: 1px solid var(--gray-line);
+  border-radius: 10px;
+  color: var(--text-sub);
 }
 
 .flight-empty-icon {
-  font-size: 40px;
-  color: rgba(255, 255, 255, 0.25);
+  font-size: 36px;
+  color: var(--gray-line);
 }
 
 .flight-empty .flight-back-btn {
   margin: 12px 0 0;
 }
 
+/* タブレット幅 : 運賃セルをカードの下に回す */
+@media (max-width: 860px) {
+  .flight-card { flex-wrap: wrap; }
+  .flight-card-route { min-width: 0; }
+  .flight-card-fares { width: 100%; border-top: 1px solid var(--gray-line); }
+  .fare-cell { flex: 1; width: auto; }
+  .fare-cell:first-child { border-left: none; }
+}
+
 /* スマホ幅 */
 @media (max-width: 640px) {
-  .flight-header { padding: 18px 20px; }
+  .flight-header { padding: 14px 16px; }
   .flight-summary-inner, .flight-main { padding-inline: 16px; }
-  .flight-route { font-size: 20px; }
-  .flight-card { flex-direction: column; align-items: stretch; gap: 14px; padding: 18px; }
-  .flight-card-no { flex-direction: row; justify-content: space-between; width: auto; }
-  .flight-time { font-size: 22px; }
+  .flight-route { font-size: 18px; }
+  .flight-card { flex-direction: column; }
+  .flight-card-no { flex-direction: row; justify-content: space-between; width: auto; padding: 14px 16px 0; }
+  .flight-card-route { padding: 12px 16px 16px; }
+  .flight-time { font-size: 20px; }
+  .selection-bar-inner { flex-direction: column; align-items: stretch; gap: 10px; padding: 10px 16px; }
+  .selection-list { justify-content: space-between; gap: 12px; }
 }

@@ -1,0 +1,12 @@
+/* 全画面共通の色・影 */
+:root {
+  --green-900: #0b3d2e;
+  --green-700: #0f6b4f;
+  --green-600: #12805c;
+  --green-100: #e3f3ec;
+  --gray-bg: #f3f6f4;
+  --gray-line: #dce4e0;
+  --text: #1c2b26;
+  --text-sub: #5f706a;
+  --shadow-card: 0 1px 3px rgba(11, 61, 46, 0.08), 0 6px 16px rgba(11, 61, 46, 0.06);
+}

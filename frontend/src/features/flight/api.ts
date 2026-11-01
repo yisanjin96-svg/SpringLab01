@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { FlightResponse } from "./types";
+import type { ErrorResponse, FlightResponse } from "./types";
 
 // X1 航空便検索 : GET /api/flights?departureAirport=FUK&arrivalAirport=HND
 // 出発地・到着地・出発日を送る（片道1回分の検索）
@@ -9,4 +9,14 @@ export async function fetchFlights(departureAirport: string, arrivalAirport: str
         params: { departureAirport, arrivalAirport, departureDate }
     })
     return response.data
+}
+
+// 通信エラーを画面に出すメッセージへ変換する（axiosの知識はこのファイルに閉じ込める）
+export function getFlightErrorMessage(e: unknown): string {
+    if (axios.isAxiosError<ErrorResponse>(e) && e.response) {
+        // サーバー400（ER001・ER002）: レスポンスの message をそのまま表示
+        return e.response.data.message
+    }
+    // E010 : 通信失敗
+    return "航空便一覧を読み込めませんでした。しばらくしてから再度お試しください。"
 }

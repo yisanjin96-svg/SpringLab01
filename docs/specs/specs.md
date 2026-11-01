@@ -1,97 +1,6 @@
-### X1 機能定義（第2段階：出発日付・往復を追加）
+### 공통 에러 응답
 
-- 機能 : 出発地➝到着地・出発日で、出発便名リストを照会する
-- 範囲外（次の段階で追加）: 人数・都市名検索・空港名表示・ページング
-- 更新テーブル : なし（照会のみ）
-
-#### 1. 入力（クライアント側➝サーバー側）
-
-- リクエスト : `GET /api/flights?departureAirport=FUK&arrivalAirport=HND&departureDate=2026-10-20`
-- 空港はプルダウン（X0）から選択するため、画面から不正な値は入らない。ただしAPIは直接呼び出せるのでサーバー側でも検証する
-
-| 引数 | 型 | 必須 | 検証 |
-|---|---|---|---|
-| departureAirport | String | ○ | 英大文字3桁（小文字は変換せずER001） |
-| arrivalAirport | String | ○ | 英大文字3桁（小文字は変換せずER001） |
-| departureDate | LocalDate | ○ | `yyyy-MM-dd`（ISO形式）。なしはER001。形式エラー（例: 2026/10/20）は未対応（ハンドラ未定義） |
-
-- 往復の場合 : 復路はフロントが出発地・到着地を逆にし、復路日を `departureDate` に入れて同じAPIをもう一度呼ぶ（APIの日付引数は1つだけ）
-
-
-#### 2. 参照テーブル・条件
-
-- 参照テーブル : `flight`
-- WHERE条件 : `departure_airport` = 完全一致 AND `arrival_airport` = 完全一致
-- AND `departure_at` >= 現在日時（出発済みの便は除外。現在日時はserviceから引数で渡す）
-- AND `departure_at` >= 出発日 00:00 AND `departure_at` < 出発日の翌日 00:00（serviceで `LocalDate` ➝ `LocalDateTime` に変換して渡す）
-- SORT : `departure_at` 昇順
-
-#### 3. 出力（サーバー側➝クライアント側）
-
-レスポンス : `List<FlightResponse>`
-
-| 論理名 | フィールド名 | 型 | 元のカラム | 備考 |
-|---|---|---|---|---|
-| 航空便ID | id | Long | flight_id | DTO作成O, 遷移先(X2)ID参照の為 |
-| 便名 | flightNumber | String | flight_number | DTO作成O, X1画面表示 |
-| 出発空港コード | departureAirport | String | departure_airport | DTO作成O, X1画面表示 |
-| 到着空港コード | arrivalAirport | String | arrival_airport | DTO作成O, X1画面表示 |
-| 出発日時 | departureAt | LocalDateTime | departure_at | DTO作成O, X1画面表示 |
-| 到着日時 | arrivalAt | LocalDateTime | arrival_at | DTO作成O, X1画面表示 |
-| 登録日時 | － | － | created_at | DTO作成X, 監査用で画面に不要 |
-| 更新日時 | － | － | updated_at | DTO作成X, 監査用で画面に不要 |
-
-- 日時のJSON形式 : `2026-10-01T09:00:00`
-
-#### 4. 例外・境界
-
-- 結果0件 : 200 + 空リスト。クライアント側でメッセージを表示する（ErrorCodeなし）
-- 存在しない空港コード（例: ZZZ） : 結果0件と同じ扱い（200 + 空リスト）
-- 引数なし・形式エラー : HTTP400, ER001
-- 出発地 = 到着地 : HTTP400, ER002（画面では到着地プルダウンから出発地を除外する）
-
-#### 5. 実装メモ
-
-- JPAメソッド名が長くなるので `@Query` を使用する
-
-
-### X0 機能定義（空港リスト照会）
-
-- 機能 : X1検索バーの出発地・到着地プルダウンに表示する空港リストを照会する
-- 更新テーブル : なし（照会のみ）
-
-#### 1. 入力（クライアント側➝サーバー側）
-
-- リクエスト : `GET /api/airports`
-- 引数 : なし
-
-#### 2. 参照テーブル・条件
-
-- 参照テーブル : `airport`
-- WHERE条件 : なし（全件）
-- SORT : `airport_code` 昇順
-
-#### 3. 出力（サーバー側➝クライアント側）
-
-レスポンス : `List<AirportResponse>`
-
-| 論理名 | フィールド名 | 型 | 元のカラム | 備考 |
-|---|---|---|---|---|
-| 空港コード | airportCode | String | airport_code | DTO作成O, X1検索リクエストの引数として使用 |
-| 空港名 | name | String | name | DTO作成O, プルダウン表示（例: 福岡空港 (FUK)） |
-| 都市名 | city | String | city | DTO作成O, プルダウン表示 |
-| 登録日時 | － | － | created_at | DTO作成X, 監査用で画面に不要 |
-| 更新日時 | － | － | updated_at | DTO作成X, 監査用で画面に不要 |
-
-
-#### 4. 例外・境界
-
-- 結果0件 : 200 + 空リスト（ErrorCodeなし）
-
-
-### 共通 エラーレスポンス
-
-- 形式 : 1件のオブジェクトで返す
+- 형식 : 객체 1개로 응답한다
   `{"code": "ER001", "message": "出発地・到着地を選択してください。"}`
 
 | ErrorCode | HTTP | message |
@@ -100,59 +9,150 @@
 | ER002 | 400 | 出発地と到着地が同じです。 |
 
 
-### X2 機能定義（航空便一覧・第1段階：片道・空港コードのみ）
+### X0 기능 정의 (공항 목록 조회)
 
-- 機能 : X1で指定した出発地・到着地の航空便を、出発日時の昇順で一覧表示する
-- 範囲外（次の段階で追加）: 便の選択（X3へ遷移）・残席数・運賃・出発日付・往復・人数
-- 更新テーブル : なし（照会のみ）
-- 新規API : なし（X1の `GET /api/flights` をそのまま使う）
+- 기능 : X1 검색 바의 출발지·도착지 드롭다운에 표시할 공항 목록을 조회한다
+- 갱신 테이블 : 없음 (조회만)
 
-#### 1. 画面遷移
+#### 1. 입력 (클라이언트 ➝ 서버)
 
-- 画面URL : `/flights?departureAirport=FUK&arrivalAirport=HND`
-- X1の検索ボタン : 入力チェックOKなら、APIは呼ばずに上記URLへ遷移するだけ（`useNavigate`）
-- 検索条件はURLに残すので、ブラウザの戻る・ブックマーク・URL直接入力でも同じ結果を表示できる
-- X2は表示時にURLから条件を取り出し（`useSearchParams`）、`GET /api/flights` を呼ぶ
+- 요청 : `GET /api/airports`
+- 인수 : 없음
 
-#### 2. 入力（URL ➝ X2 ➝ サーバー側）
+#### 2. 참조 테이블·조건
 
-| 引数 | 取り出し元 | 検証 |
+- 참조 테이블 : `airport`
+- WHERE 조건 : 없음 (전체)
+- 정렬 : `airport_code` 오름차순
+
+#### 3. 출력 (서버 ➝ 클라이언트)
+
+응답 : `List<AirportResponse>`
+
+| 논리명 | 필드명 | 타입 | 원본 컬럼 | 비고 |
+|---|---|---|---|---|
+| 공항 코드 | airportCode | String | airport_code | DTO 포함, X1 검색 요청의 인수로 사용 |
+| 공항명 | name | String | name | DTO 포함, 드롭다운 표시 (예: 福岡空港 (FUK)) |
+| 도시명 | city | String | city | DTO 포함, 드롭다운 표시 |
+| 등록 일시 | － | － | created_at | DTO 제외, 감사용이라 화면에 불필요 |
+| 갱신 일시 | － | － | updated_at | DTO 제외, 감사용이라 화면에 불필요 |
+
+#### 4. 예외·경계
+
+- 결과 0건 : 200 + 빈 목록 (ErrorCode 없음)
+
+
+### X1 기능 정의 (2단계: 출발일·왕복 추가)
+
+- 기능 : 출발지, 도착지, 출발일로 항공편 목록을 조회한다
+- 범위 외 (다음 단계에서 추가) : 인원수, 도시명 검색, 공항명 표시, 페이징
+- 갱신 테이블 : 없음 (조회만)
+
+#### 1. 입력 (클라이언트 ➝ 서버)
+
+- 요청 : `GET /api/flights?departureAirport=FUK&arrivalAirport=HND&departureDate=2026-10-20`
+- 공항은 드롭다운(X0)에서 고르므로 화면에서는 잘못된 값이 들어오지 않는다. 다만 API는 직접 호출할 수 있으므로 서버에서도 검증한다
+
+| 인수 | 타입 | 필수 | 검증 |
+|---|---|---|---|
+| departureAirport | String | ○ | 영대문자 3자리 (소문자는 변환하지 않고 ER001) |
+| arrivalAirport | String | ○ | 영대문자 3자리 (소문자는 변환하지 않고 ER001) |
+| departureDate | LocalDate | ○ | `yyyy-MM-dd`(ISO 형식). 없으면 ER001. 형식 에러(예: 2026/10/20)는 미대응(핸들러 없음) |
+
+- 왕복 : 복로는 프론트가 출발지와 도착지를 뒤집고, 복로일을 `departureDate`에 넣어 같은 API를 한 번 더 호출한다 (API의 날짜 인수는 1개뿐)
+
+#### 2. 참조 테이블·조건
+
+- 참조 테이블 : `flight`
+- WHERE 조건 : `departure_airport` 완전 일치 AND `arrival_airport` 완전 일치
+- AND `departure_at` >= 현재 일시 (이미 출발한 편 제외. 현재 일시는 service에서 인수로 넘긴다)
+- AND `departure_at` >= 출발일 00:00 AND `departure_at` < 출발일 다음 날 00:00 (service에서 `LocalDate` ➝ `LocalDateTime`으로 변환해서 넘긴다)
+- 정렬 : `departure_at` 오름차순
+
+#### 3. 출력 (서버 ➝ 클라이언트)
+
+응답 : `List<FlightResponse>`
+
+| 논리명 | 필드명 | 타입 | 원본 컬럼 | 비고 |
+|---|---|---|---|---|
+| 항공편 ID | id | Long | flight_id | DTO 포함, 전이 대상(X2)의 ID 참조용 |
+| 편명 | flightNumber | String | flight_number | DTO 포함, X1 화면 표시 |
+| 출발 공항 코드 | departureAirport | String | departure_airport | DTO 포함, X1 화면 표시 |
+| 도착 공항 코드 | arrivalAirport | String | arrival_airport | DTO 포함, X1 화면 표시 |
+| 출발 일시 | departureAt | LocalDateTime | departure_at | DTO 포함, X1 화면 표시 |
+| 도착 일시 | arrivalAt | LocalDateTime | arrival_at | DTO 포함, X1 화면 표시 |
+| 등록 일시 | － | － | created_at | DTO 제외, 감사용이라 화면에 불필요 |
+| 갱신 일시 | － | － | updated_at | DTO 제외, 감사용이라 화면에 불필요 |
+
+- 일시의 JSON 형식 : `2026-10-01T09:00:00`
+
+#### 4. 예외·경계
+
+- 결과 0건 : 200 + 빈 목록. 메시지는 클라이언트에서 표시한다 (ErrorCode 없음)
+- 존재하지 않는 공항 코드 (예: ZZZ) : 결과 0건과 같게 처리한다 (200 + 빈 목록)
+- 인수 없음·형식 에러 : HTTP 400, ER001
+- 출발지 = 도착지 : HTTP 400, ER002 (화면에서는 도착지 드롭다운에서 출발지를 제외한다)
+
+#### 5. 구현 메모
+
+- JPA 메서드 이름이 길어지므로 `@Query`를 사용한다
+
+
+### X2 기능 정의 (항공편 목록·1단계: 편도·공항 코드만)
+
+- 기능 : X1에서 지정한 출발지·도착지의 항공편을 출발 일시 오름차순으로 표시한다
+- 범위 외 (다음 단계에서 추가) : 편 선택(X3로 이동), 남은 좌석 수, 운임, 출발일, 왕복, 인원수
+- 갱신 테이블 : 없음 (조회만)
+- 신규 API : 없음 (X1의 `GET /api/flights`를 그대로 사용)
+
+#### 1. 화면 전이
+
+- 화면 URL : `/flights?departureAirport=FUK&arrivalAirport=HND`
+- X1의 검색 버튼 : 입력 체크가 통과하면 API를 호출하지 않고 위 URL로 이동만 한다 (`useNavigate`)
+- 검색 조건이 URL에 남으므로 브라우저 뒤로 가기, 북마크, URL 직접 입력으로도 같은 결과를 볼 수 있다
+- X2는 표시할 때 URL에서 조건을 꺼내(`useSearchParams`) `GET /api/flights`를 호출한다
+
+#### 2. 입력 (URL ➝ X2 ➝ 서버)
+
+| 인수 | 꺼내는 곳 | 검증 |
 |---|---|---|
-| departureAirport | URLクエリ | クライアントでは検証しない。サーバーの ER001・ER002 をそのまま表示する |
-| arrivalAirport | URLクエリ | 同上 |
+| departureAirport | URL 쿼리 | 클라이언트에서는 검증하지 않는다. 서버의 ER001·ER002를 그대로 표시한다 |
+| arrivalAirport | URL 쿼리 | 위와 같음 |
 
-- URL直接入力で不正な値が来てもサーバーが検証するので、クライアント側の検証は重複させない
+- URL에 잘못된 값을 직접 넣어도 서버가 검증하므로, 클라이언트 검증은 중복시키지 않는다
 
-#### 3. 表示項目
+#### 3. 표시 항목
 
-| 論理名 | フィールド名 | 表示形式 |
+| 논리명 | 필드명 | 표시 형식 |
 |---|---|---|
-| 検索条件 | departureAirport, arrivalAirport | `FUK ➝ HND`（URLの値） |
-| 件数 | flights.length | `n件` |
-| 便名 | flightNumber | そのまま |
-| 出発空港 | departureAirport | そのまま |
-| 到着空港 | arrivalAirport | そのまま |
-| 出発日時 | departureAt | `yyyy/MM/dd HH:mm` |
-| 到着日時 | arrivalAt | `yyyy/MM/dd HH:mm` |
+| 검색 조건 | departureAirport, arrivalAirport | `FUK ➝ HND` (URL 값) |
+| 건수 | flights.length | `n件` |
+| 편명 | flightNumber | 그대로 |
+| 출발 공항 | departureAirport | 그대로 |
+| 도착 공항 | arrivalAirport | 그대로 |
+| 출발 일시 | departureAt | `yyyy/MM/dd HH:mm` |
+| 도착 일시 | arrivalAt | `yyyy/MM/dd HH:mm` |
 
-- 並び順 : サーバーの返した順（departure_at 昇順）をそのまま使う
+- 정렬 : 서버가 돌려준 순서(departure_at 오름차순)를 그대로 쓴다
 
-#### 4. 例外・境界
+#### 4. 예외·경계
 
-| ケース | 表示 |
+| 경우 | 표시 |
 |---|---|
-| 結果0件 | I001 : 条件に合う航空便がありません。 |
-| サーバー400（ER001・ER002） | レスポンスの `message` をそのまま表示 |
-| 通信失敗（レスポンスなし） | E010 : 航空便一覧を読み込めませんでした。しばらくしてから再度お試しください。 |
+| 결과 0건 | I001 : 条件に合う航空便がありません。 |
+| 서버 400 (ER001·ER002) | 응답의 `message`를 그대로 표시 |
+| 통신 실패 (응답 없음) | E010 : 航空便一覧を読み込めませんでした。しばらくしてから再度お試しください。 |
 
-#### 5. 実装メモ（フロント）
+#### 5. 구현 메모 (프론트)
 
-- 航空便の呼び出しは `features/flight` に移す（backendの `flight` ドメインと1:1）
-  - `types.ts` : `FlightResponse`, `ErrorResponse`（home から移動）
-  - `api.ts` : `fetchFlights()`（home から移動）
-  - `hooks/useFlights.ts` : home から移動。X2表示時に呼ぶ
-  - `pages/FlightList.tsx` : X2画面
-  - `components/X2_FlightTable.tsx` : 一覧表
-- `features/home` は空港（X0）だけを持ち、X1は遷移だけするので flight を import しない（features間import禁止を守る）
-- `App.tsx` にルーティングを追加 : `/` ➝ Home（X1）, `/flights` ➝ FlightList（X2）
-- X1の testUI（結果リスト・0件メッセージ・flightError）は X2 に移したら削除する
+- 항공편 호출은 `features/flight`로 옮긴다 (백엔드의 `flight` 도메인과 1:1)
+  - `types.ts` : `FlightResponse`, `ErrorResponse` (home에서 이동)
+  - `api.ts` : `fetchFlights()` (home에서 이동)
+  - `hooks/useFlights.ts` : home에서 이동. X2 표시 시 호출
+  - `pages/FlightList.tsx` : X2 화면
+  - `components/X2_FlightTable.tsx` : 목록 표
+- `features/home`은 공항(X0)만 가지고, X1은 이동만 하므로 flight를 import하지 않는다 (features 간 import 금지를 지킨다)
+- `App.tsx`에 라우팅을 추가한다 : `/` ➝ Home(X1), `/flights` ➝ FlightList(X2)
+- X1의 testUI(결과 목록·0건 메시지·flightError)는 X2로 옮기면 삭제한다
+
+

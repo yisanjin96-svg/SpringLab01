@@ -36,7 +36,7 @@ X2 표시 ─ useSearchParams로 조건 꺼냄 → GET /api/flights → 목록 /
 |---|---|---|
 | home | `types.ts` / `api.ts` / `hooks/useAirports.ts` | X0 공항 목록 |
 | home | `components/X1_FlightSearchBar.tsx` | X1 검색바 (화면 전용) |
-| home | `components/C1_AirportSelect.tsx` | 공항 드롭다운 (공통 부품) |
+| 공통 | `src/components/C1_AirportSelect.tsx` | 공항 드롭다운 (공통 부품) |
 | flight | `types.ts` / `api.ts` / `hooks/useFlights.ts` | X1 API(항공편 검색) 호출 |
 | flight | `components/X2_FlightTable.tsx` | X2 목록 표 (화면 전용) |
 | flight | `pages/FlightList.tsx` | X2 화면 |

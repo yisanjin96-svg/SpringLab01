@@ -3,37 +3,37 @@
    ===================== */
 .home-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #0d1117 0%, #161b27 60%, #1a2744 100%);
+  /* 上部だけ緑にして、検索バーを緑の面に載せる */
+  background: linear-gradient(160deg, var(--green-900) 0%, var(--green-700) 100%) top / 100% 440px no-repeat, var(--gray-bg);
   font-family: 'Segoe UI', 'Hiragino Sans', 'Yu Gothic UI', 'Meiryo', sans-serif;
-  color: #fff;
+  color: var(--text);
 }
 
 .home-header {
-  padding: 24px 60px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 18px 40px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .home-logo {
-  margin: 0;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
-  letter-spacing: 1px;
-  color: #7eb3ff;
+  letter-spacing: 2px;
+  color: #fff;
 }
 
 .home-main {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 100px;
+  padding-top: 88px;
   padding-inline: 40px;
 }
 
 .home-headline {
-  font-size: 36px;
+  margin-bottom: 32px;
+  font-size: 34px;
   font-weight: 700;
-  margin-bottom: 36px;
-  letter-spacing: -0.5px;
+  color: #fff;
 }
 
 /* =====================
@@ -44,7 +44,7 @@
   flex-direction: column;
   gap: 14px;
   width: 100%;
-  max-width: 1000px;
+  max-width: 1080px;
 }
 
 .search-tabs {
@@ -53,30 +53,34 @@
 }
 
 .search-tab {
-  padding: 7px 20px;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 8px 22px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
   background: transparent;
-  color: rgba(255, 255, 255, 0.5);
+  color: #fff;
+  font-family: inherit;
   cursor: pointer;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   transition: background 0.15s, color 0.15s;
 }
 
+.search-tab:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
 .search-tab.active {
-  background: #4f8ef7;
-  border-color: #4f8ef7;
-  color: #fff;
+  background: #fff;
+  border-color: #fff;
+  color: var(--green-700);
 }
 
 .search-bar {
   display: flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.07);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 14px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 8px 28px rgba(11, 61, 46, 0.22);
 }
 
 .search-cell {
@@ -84,38 +88,44 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: 14px 18px;
+  min-width: 0;
+  padding: 16px 18px;
 }
 
 .search-cell.disabled {
-  opacity: 0.3;
+  opacity: 0.4;
   pointer-events: none;
 }
 
 .search-divider {
   width: 1px;
   height: 40px;
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--gray-line);
   flex-shrink: 0;
 }
 
 .search-label {
   font-size: 11px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.5);
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--text-sub);
 }
 
 .search-input {
+  width: 100%;
   background: transparent;
   border: none;
   outline: none;
-  color: #fff;
+  color: var(--text);
+  font-family: inherit;
   font-size: 14px;
+  font-weight: 600;
   padding: 0;
-  color-scheme: dark;
-  width: 100%;
+  color-scheme: light;
+}
+
+.search-input::placeholder {
+  color: var(--text-sub);
+  font-weight: 400;
 }
 
 .search-counter {
@@ -125,102 +135,74 @@
 }
 
 .search-counter-btn {
-  background: rgba(255, 255, 255, 0.12);
+  width: 26px;
+  height: 26px;
+  background: var(--green-100);
   border: none;
-  border-radius: 4px;
-  color: #fff;
+  border-radius: 50%;
+  color: var(--green-700);
   font-size: 15px;
-  width: 24px;
-  height: 24px;
+  font-weight: 700;
   cursor: pointer;
   line-height: 1;
 }
 
 .search-counter-val {
+  min-width: 16px;
   font-size: 14px;
   font-weight: 600;
-  min-width: 16px;
   text-align: center;
-  color: #fff;
+  color: var(--text);
 }
 
 .search-counter-btn:disabled {
-  opacity: 0.3;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
 .search-submit-btn {
   flex-shrink: 0;
-  margin: 8px;
-  padding: 12px 28px;
-  background: #4f8ef7;
+  margin: 10px;
+  padding: 14px 32px;
+  background: var(--green-700);
   border: none;
-  border-radius: 10px;
+  border-radius: 6px;
   color: #fff;
+  font-family: inherit;
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
+  transition: background 0.15s;
 }
 
-/* =====================
-   C1_AirportSelect
-   ===================== */
-.airport-select {
-  position: relative;
+.search-submit-btn:hover {
+  background: var(--green-900);
 }
 
-.airport-select-input {
-  cursor: pointer;
+.search-tab:focus-visible,
+.search-counter-btn:focus-visible,
+.search-submit-btn:focus-visible {
+  outline: 2px solid var(--green-600);
+  outline-offset: 2px;
 }
 
-/* セルの真下に表示（隙間を空けるとマウスが離れて閉じるため top: 100%） */
-.airport-select-list {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  z-index: 10;
-  min-width: 240px;
-  max-height: 280px;
-  overflow-y: auto;
-  margin: 0;
-  padding: 6px;
-  list-style: none;
-  background: #1c2333;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 10px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
-}
-
-.airport-select-item {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 8px 12px;
+/* 入力エラー・空港取得エラー */
+.search-wrap > p {
+  padding: 10px 16px;
+  background: #fff;
+  border-left: 4px solid #c0392b;
   border-radius: 6px;
-  cursor: pointer;
-}
-
-.airport-select-item:hover {
-  background: rgba(79, 142, 247, 0.18);
-}
-
-.airport-select-item.selected {
-  background: rgba(79, 142, 247, 0.32);
-}
-
-.airport-select-name {
-  font-size: 14px;
-  color: #fff;
-}
-
-.airport-select-sub {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.airport-select-empty {
-  padding: 8px 12px;
+  color: #c0392b;
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.5);
+  font-weight: 600;
+}
+
+/* 検索バーが1行に収まらない幅 */
+@media (max-width: 960px) {
+  .home-main { padding-top: 48px; padding-inline: 16px; }
+  .home-headline { font-size: 26px; }
+  .search-bar { flex-direction: column; align-items: stretch; }
+  .search-cell, .search-bar > .airport-select { flex: none; border-bottom: 1px solid var(--gray-line); }
+  .search-divider { display: none; }
 }
