@@ -21,13 +21,21 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
+
 @Entity 
-@Table (name = "flight_fare",
+@Table (name = "flight_fare", 
     uniqueConstraints = @UniqueConstraint(name = "uq_flight_fare_flight_class", columnNames = {"flight_id", "seat_class"}))
 @Check (constraints = "amount >= 0")
 @EntityListeners (AuditingEntityListener.class)
 public class FlightFare {
     
+    /**
+     * DB制約를 엔티티 클래스에 선언
+     * @UniqueConstraint : uniqueConstraints   
+     *  의미 : 항공편ID와 클래스 같은 항공편에 클래스 2행 존재하는것을 거부 
+     * @Check (constraints = "amount >= 0")
+     *  의미 : 실무적으로 amount(운임총합)값이 0이상이 되어야함.
+     */
     protected FlightFare(){}
 
     @Id

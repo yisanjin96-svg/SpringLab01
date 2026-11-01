@@ -120,3 +120,13 @@
 - 배운 것 : `useEffect`는 이전 요청의 늦은 응답을 무시하는 정리 코드가 필요하다는 것, axios 같은 통신 지식은 `api.ts`에 가두고 계산 규칙은 화면 부품 밖으로 빼야 한다는 걸 배웠다
 - 구현한 것 : 클린 아키텍처 22장(인터페이스 어댑터)이 들어간 `getFlightErrorMessage`와 20장(업무 규칙)이 들어간 `fare.ts`의 합계·좌석 표시를 구현하고, `C1_AirportSelect`를 공통 위치로 옮겼다 (AI가 작성)
 - 피드백 : 검토 결과를 전부 AI가 고쳤으니, `useFlights`의 `ignore`가 없으면 무슨 일이 생기는지 자기 말로 설명해 보기.
+
+## 2026-11-01 운임·남은 좌석 / domain (Enum · Seat · FlightFare)
+- 배운 것 : 틀리면 안 되는 고정값은 Enum으로 묶는다는 것, 운임 여러 행이 항공편 하나에 속해서 `@ManyToOne`을 쓰고 엔티티에는 FK 숫자 대신 `Flight` 객체를 필드로 둔다는 걸 배웠다
+- 구현한 것 : 클린 아키텍처 20장(엔티티)이 들어간 `Seat`·`FlightFare`와 Effective Java 아이템 34(열거 타입)가 들어간 `SeatClass`·`SeatStatus`를 구현했다 (직접 작성, 테스트 데이터는 AI가 입력)
+- 피드백 : 엔티티는 혼자 칠 만큼 익었음. 다만 `id`에 `@JoinColumn`을 붙인 것처럼 비슷해 보이는 어노테이션은 무슨 용도인지 확인하고 쓰기, `SeatStatus` 주석은 아직 미완성.
+
+## 2026-11-01 운임·남은 좌석 / repository (FlightFareRepository, 작성 중)
+- 배운 것 : SQL은 FROM → WHERE → SELECT 순서로 생각하고, `COUNT`와 일반 컬럼을 같이 쓰면 `GROUP BY`가 필요하다는 것, JPQL은 컬럼이 아니라 자바 필드를 따라가서 `flight_id`가 `ff.flight.id`가 된다는 걸 배웠다
+- 구현한 것 : 클린 아키텍처 23장(데이터베이스 게이트웨이)이 들어간 `FlightFareRepository`를 따라 쳤다 (쿼리 오타가 남아 있어 아직 미완성, 기동 확인 전)
+- 피드백 : 왜 객체로 참조하는지 끝까지 물어본 건 좋음. 다만 설명은 이해했는데 코드에는 `ff.fightId`로 쳤으니, 쿼리는 저장 전에 엔티티 필드와 한 번 대조하기.
