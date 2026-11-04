@@ -10,8 +10,7 @@ import com.hoshimoto.lovemyself.flight.domain.FlightFare;
 
 public interface FlightFareRepository extends JpaRepository<FlightFare, Long> {
 
-    @Query (" SELECT ff FROM FlightFare ff "
-    + "WHERE ff.fightId IN :filghtIds")
+    @Query (" SELECT ff FROM FlightFare ff WHERE ff.flight.id IN :filghtIds")
     List<FlightFare> findByFlightIds(@Param("flightIds") List<Long> flightIds);
 }
 
@@ -26,3 +25,6 @@ public interface FlightFareRepository extends JpaRepository<FlightFare, Long> {
 // @ManyToOne 으로 플라이트가 적용되어 있는데
     // 운임기준 여러 행이 하나의 항공편이 속해 있어
     // N : 1 의 관계 
+
+// // 개웃긴게 그냥 SELECT * FROM WHERE flightfare.fightId 아닌가
+// 7. FlightFareRepository에 편 ID 목록으로 운임을 찾는 @Query를 작성한다.
