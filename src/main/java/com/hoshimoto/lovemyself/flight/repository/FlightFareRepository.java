@@ -10,7 +10,7 @@ import com.hoshimoto.lovemyself.flight.domain.FlightFare;
 
 public interface FlightFareRepository extends JpaRepository<FlightFare, Long> {
 
-    @Query (" SELECT ff FROM FlightFare ff WHERE ff.flight.id IN :filghtIds")
+    @Query (" SELECT ff FROM FlightFare ff WHERE ff.flight.id IN :flightIds")
     List<FlightFare> findByFlightIds(@Param("flightIds") List<Long> flightIds);
 }
 
