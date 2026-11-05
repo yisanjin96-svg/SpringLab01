@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -14,11 +13,9 @@ import com.hoshimoto.lovemyself.common.exception.BusinessException;
 import com.hoshimoto.lovemyself.common.exception.ErrorCode;
 import com.hoshimoto.lovemyself.flight.domain.Flight;
 import com.hoshimoto.lovemyself.flight.domain.FlightFare;
-import com.hoshimoto.lovemyself.flight.domain.SeatStatus;
 import com.hoshimoto.lovemyself.flight.dto.FlightResponse;
 import com.hoshimoto.lovemyself.flight.repository.FlightFareRepository;
 import com.hoshimoto.lovemyself.flight.repository.FlightRepository;
-import com.hoshimoto.lovemyself.flight.repository.SeatCountView;
 import com.hoshimoto.lovemyself.flight.repository.SeatRepository;
 
 /**
